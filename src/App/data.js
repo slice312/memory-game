@@ -1,4 +1,4 @@
-export const cards = [
+export const cardsData = [
     {
         name: "php",
         img: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/74196/php-logo_1.png",

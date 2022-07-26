@@ -1,7 +1,11 @@
-import './index.scss';
+// import './index.scss';
 import $ from 'jquery';
 import React from "react";
-import {cards} from "./data";
+import _ from "lodash";
+import {cardsData} from "./data";
+import css from "./index.module.scss";
+
+import {Card} from "./Card";
 
 // Memory Game
 // © 2014 Nate Wiley
@@ -124,65 +128,61 @@ function kek() {
     // Memory.init(data);
 };
 
+const getRandomCards = () => {
+    return _.shuffle(cardsData.concat(cardsData));
+};
+
 
 export const App = () => {
     React.useEffect(() => {
-        console.log("SUKA");
-
-        const game = document.querySelector(".game");
-        const alp = $(".game");
-        console.log("game", game);
-        console.log("alp", alp);
         setTimeout(
             () => kek(), 1000);
     }, []);
 
 
+    const cardClicked = (e) => {
+        console.log(e.currentTarget);
+        e.currentTarget.classList.add(css.picked);
+        // var _ = Memory;
+        // var $card = $(this);
+        // /**
+        //  * TODO:
+        //  * if paused
+        //  */
+        //
+        // if ($card.find(".inside").hasClass("matched") && !$card.find(".inside").hasClass("picked")) {
+        //     $card.find(".inside").addClass("picked");
+        //     if (!_.guess) {
+        //         _.guess = $(this).attr("data-id");
+        //     } else if (_.guess == $(this).attr("data-id") && !$(this).hasClass("picked")) {
+        //         $(".picked").addClass("matched");
+        //         _.guess = null;
+        //     } else {
+        //         _.guess = null;
+        //         _.paused = true;
+        //         setTimeout(function () {
+        //             $(".picked").removeClass("picked");
+        //             Memory.paused = false;
+        //         }, 600);
+        //     }
+        //     if ($(".matched").length == $(".card").length) {
+        //         _.win();
+        //     }
+        // }
+    };
+
     return (
-        <div className="wrap">
-            <div className="game">
+        <div className={css.wrap}>
+            <div className={css.game}>
                 {
-                    cards.map((card, i) => {
+                    getRandomCards().map((card, i) => {
                         return (
-                            <div key={i} className="card">
-                                <div className="inside">
-                                    <div className="front">
-                                        <img src={card.img} alt="card=image"/>
-                                    </div>
-                                    <div className="back">
-                                        <img
-                                            src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/74196/codepen-logo.png"
-                                            alt="Codepen"/>
-                                    </div>
-                                </div>
-                            </div>
+                            <Card key={i} card={card}/>
                         );
                     })
                 }
 
             </div>
-
-            <div className="modal-overlay">
-                <div className="modal">
-                    <h2 className="winner">You Rock!</h2>
-                    <button className="restart">Play Again?</button>
-                    <p className="message">Developed on <a href="https://codepen.io">CodePen</a> by <a
-                        href="https://codepen.io/natewiley">Nate Wiley</a></p>
-                    <p className="share-text">Share it?</p>
-                    <ul className="social">
-                        <li><a target="_blank" className="twitter"
-                               href="https://twitter.com/share?url=https://codepen.io/natewiley/pen/HBrbL"><span
-                            className="fa fa-twitter"></span></a></li>
-                        <li><a target="_blank" className="facebook"
-                               href="https://www.facebook.com/sharer.php?u=https://codepen.io/natewiley/pen/HBrbL"><span
-                            className="fa fa-facebook"></span></a></li>
-                        <li><a target="_blank" className="google"
-                               href="https://plus.google.com/share?url=https://codepen.io/natewiley/pen/HBrbL"><span
-                            className="fa fa-google"></span></a></li>
-                    </ul>
-                </div>
-            </div>
-
         </div>
     );
 };
