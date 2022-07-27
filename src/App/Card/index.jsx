@@ -3,7 +3,7 @@ import cn from "classnames";
 import sourceCodeImg from "src/assets/images/source-code.svg";
 import css from "./styles.module.scss";
 
-export const Card = ({onClick, card, index, isInactive, isFlipped}) => {
+export const Card = ({onClick, index, card, isInactive, isFlipped}) => {
     const handleClick = () => {
         !isFlipped && !isInactive && onClick(index);
     };

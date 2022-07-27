@@ -6,13 +6,9 @@ import {Card} from "./Card";
 import _ from "lodash";
 import React from "react";
 import "./styles.scss";
+import {nanoid} from "nanoid";
 import {PlayerContext} from "./playerContext/context";
 
-const getCards = () => {
-    return _.chain(cardsData.concat(cardsData))
-        .drop(0)
-        .value();
-};
 
 export const Game = () => {
 
@@ -45,21 +41,33 @@ export const Game = () => {
     // };
 
     const timeoutHandlerId = useRef(null);
+    React.useEffect(() => {
+        if (openedCards.length === 2) {
+            timeoutHandlerId.current = setTimeout(() => setOpenedCards([]), 3000);
+            if (openedCards[0].type === openedCards[1].type) {
+                setClearedCards(prev => [...prev, ...openedCards])
+            }
+        }
+    }, [openedCards]);
+
+
+    React.useEffect(() => {
+        if (1 === 3) {
+            // TODO: уровень сложности какой-то
+            const handler = setInterval(() => {
+                setCards(prev =>  _.shuffle(prev));
+            }, 5_000);
+            return () => clearInterval(handler);
+        }
+    }, []);
 
     const handleCardClick = (index) => {
         if (openedCards.length === 2) {
             setOpenedCards([index]);
             clearTimeout(timeoutHandlerId.current);
-        } else {
-            setOpenedCards((prev) => [...prev, index]);
-        }
+        } else
+            setOpenedCards(prev => [...prev, index]);
     };
-
-    React.useEffect(() => {
-        if (openedCards.length === 2) {
-            timeoutHandlerId.current = setTimeout(() => setOpenedCards([]), 2500);
-        }
-    }, [openedCards]);
 
     // React.useEffect(() => {
     //     let timeout = null;
@@ -101,9 +109,9 @@ export const Game = () => {
                     cards.map((card, i) => {
                         return (
                             <Card
-                                key={i}
-                                card={card}
+                                key={card.id}
                                 index={i}
+                                card={card}
                                 isInactive={checkIsInactive(card)}
                                 isFlipped={openedCards.includes(i)}
                                 onClick={handleCardClick}
@@ -140,3 +148,9 @@ export const Game = () => {
 };
 
 
+const getCards = () => {
+    return _.chain(cardsData.concat(cardsData))
+        .drop(0)
+        .map((card, i) => ({...card, id: i}))
+        .value();
+};
