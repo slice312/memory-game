@@ -4,7 +4,7 @@
     aspect-ratio: 15;
     border-radius: 4px;
     box-shadow: 2px 2px 4px 4px #DEDEDE;
-    transition: 300ms;
+    transition: 0.5s;
     transform-style: preserve-3d;
     position: relative;
     cursor: pointer;
@@ -15,10 +15,8 @@
     }
 
     &.isInactive {
-        // visibility: hidden;
-        background-color: red;
         opacity: 0;
-        //TODO: opacity: 0
+        cursor: default;
     }
 
     img {

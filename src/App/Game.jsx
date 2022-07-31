@@ -14,83 +14,68 @@ export const Game = () => {
 
     const [cards, setCards] = useState(getCards);
 
-    const [openedCards, setOpenedCards] = useState([]);
-    const [clearedCards, setClearedCards] = useState({});
+    const [openedCardIds, setOpenedCardIds] = useState([]);
+    const [clearedCards, setClearedCards] = useState([]);
 
     const [showModal, setShowModal] = useState(false);
 
 
-    // const checkCompletion = () => {
-    //     if (Object.keys(clearedCards).length === cardsData.length) {
-    //         setShowModal(true);
-    //     }
-    // };
 
-    // const evaluate = () => {
-    //     const [first, second] = openedCards;
-    //     if (cards[first].type === cards[second].type) {
-    //         setClearedCards((prev) => ({...prev, [cards[first].type]: true}));
-    //         setOpenedCards([]);
-    //         return;
-    //     }
-    //     // This is to flip the cards back after 500ms duration
-    //     timeout.current = setTimeout(() => {
-    //         setOpenedCards([]);
-    //     }, 2500);
-    //
-    // };
+
 
     const timeoutHandlerId = useRef(null);
     React.useEffect(() => {
-        if (openedCards.length === 2) {
-            timeoutHandlerId.current = setTimeout(() => setOpenedCards([]), 3000);
-            if (openedCards[0].type === openedCards[1].type) {
-                setClearedCards(prev => [...prev, ...openedCards])
+        if (openedCardIds.length === 2) {
+            const [firstCardId, secondCardId] = openedCardIds;
+            const firstCard = cards.find(x => x.id === firstCardId);
+            const secondCard = cards.find(x => x.id === secondCardId);
+
+            if (firstCard.type === secondCard.type) {
+                // debugger
+                setTimeout(() => {
+                    setOpenedCardIds([]);
+                    setClearedCards(prev => [...prev, ...openedCardIds]);
+                }, 700);
+            } else {
+                timeoutHandlerId.current = setTimeout(() => setOpenedCardIds([]), 3000);
             }
         }
-    }, [openedCards]);
+    }, [openedCardIds]);
 
 
     React.useEffect(() => {
         if (1 === 3) {
             // TODO: уровень сложности какой-то
             const handler = setInterval(() => {
-                setCards(prev =>  _.shuffle(prev));
+                setCards(prev => _.shuffle(prev));
             }, 5_000);
             return () => clearInterval(handler);
         }
     }, []);
 
-    const handleCardClick = (index) => {
-        if (openedCards.length === 2) {
-            setOpenedCards([index]);
+    const handleCardClick = (card) => {
+        if (openedCardIds.length === 2) {
+            setOpenedCardIds([card.id]);
             clearTimeout(timeoutHandlerId.current);
         } else
-            setOpenedCards(prev => [...prev, index]);
+            setOpenedCardIds(prev => [...prev, card.id]);
     };
 
-    // React.useEffect(() => {
-    //     let timeout = null;
-    //     if (openedCards.length === 2) {
-    //         timeout = setTimeout(evaluate, 300);
-    //     }
-    //     return () => {
-    //         clearTimeout(timeout);
-    //     };
-    // }, [openedCards]);
-
-    // useEffect(() => {
-    //     checkCompletion();
-    // }, [clearedCards]);
-
-
-    const checkIsInactive = (card) => {
-        return Boolean(clearedCards[card.type]);
+    const checkCompletion = () => {
+        if (Object.keys(clearedCards).length === cards.length) {
+            setShowModal(true);
+        }
     };
+
+
+    useEffect(() => {
+        checkCompletion();
+    }, [clearedCards]);
+
 
     const handleRestart = () => {
-        setClearedCards({});
-        setOpenedCards([]);
+        setClearedCards([]);
+        setOpenedCardIds([]);
         setShowModal(false);
         setCards(getCards);
     };
@@ -110,10 +95,9 @@ export const Game = () => {
                         return (
                             <Card
                                 key={card.id}
-                                index={i}
                                 card={card}
-                                isInactive={checkIsInactive(card)}
-                                isFlipped={openedCards.includes(i)}
+                                isInactive={clearedCards.includes(card.id)}
+                                isFlipped={openedCardIds.includes(card.id)}
                                 onClick={handleCardClick}
                             />
                         );
