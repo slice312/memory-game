@@ -11,6 +11,8 @@ import {
 } from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {useForm, Controller} from "react-hook-form";
+import {GameMode} from "src/shared/constants";
+
 
 
 export const WelcomePage = () => {
@@ -36,7 +38,7 @@ export const WelcomePage = () => {
                         name="name"
                         control={control}
                         rules={{required: "Name required"}}
-                        defaultValue=""
+                        defaultValue="Tala"
                         render={({field, fieldState}) => (
                             <TextField
                                 name="name"
@@ -51,11 +53,12 @@ export const WelcomePage = () => {
                         )}
                     />
 
+
                     <Controller
                         name="gameMode"
                         control={control}
                         rules={{required: "Game mode required"}}
-                        defaultValue={4}
+                        defaultValue={GameMode.Mode4x4}
                         render={({field, fieldState}) => (
                             <FormControl>
                                 <InputLabel id="game-mode-label">
@@ -67,9 +70,9 @@ export const WelcomePage = () => {
                                     label="Game Mode"
                                     onChange={field.onChange}
                                 >
-                                    <MenuItem value={4}>2 x 2</MenuItem>
-                                    <MenuItem value={16}>4 x 4</MenuItem>
-                                    <MenuItem value={20}>5 x 4</MenuItem>
+                                    <MenuItem value={GameMode.Mode4x4}>4 x 4</MenuItem>
+                                    <MenuItem value={GameMode.Mode5x6}>5 x 6</MenuItem>
+                                    <MenuItem value={GameMode.Mode6x6}>6 x 6</MenuItem>
                                 </Select>
                                 <FormHelperText>With label + helper text</FormHelperText>
                             </FormControl>

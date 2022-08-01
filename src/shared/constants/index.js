@@ -1,5 +1,9 @@
-export const GameMode = {
-    Mode2x2: 4,
+/**
+ * @enum {number}
+ */
+export const GameMode = Object.freeze({
     Mode4x4: 16,
-    Mode5x4: 20,
-}
+    Mode5x6: 30,
+    Mode6x6: 36,
+    // Mode6x6: 36,
+});

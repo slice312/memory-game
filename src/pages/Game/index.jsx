@@ -7,6 +7,11 @@ import React from "react";
 import "./styles.scss";
 import {GameMode} from "src/shared/constants";
 import {useLocation} from "react-router-dom";
+import {value} from "lodash/seq";
+
+import {CardsGridContainer} from "./CardsGridContainer";
+
+
 
 
 export const Game = () => {
@@ -78,9 +83,22 @@ export const Game = () => {
         setCards(getCards);
     };
 
+    let rows = 4;
+    let columns = 4;
+
+    if (location.state.mode === GameMode.Mode5x6) {
+        rows = 5;
+        columns = 6;
+    }
+
+    if (location.state.mode === GameMode.Mode6x6) {
+        rows = 6;
+        columns = 6;
+    }
+
     return (
         <div className="App">
-            <div className="container">
+            <CardsGridContainer rows={rows} columns={columns}>
                 {
                     cards.map((card, i) => {
                         return (
@@ -94,7 +112,7 @@ export const Game = () => {
                         );
                     })
                 }
-            </div>
+            </CardsGridContainer>
 
             {/*<footer>*/}
             {/*    <div className="score">*/}
@@ -123,18 +141,42 @@ export const Game = () => {
 };
 
 
+/**
+ * @param {GameMode} mode
+ */
 const getCards = (mode) => {
-    // const card = cardsData[0];
-    // return [card ,card]
-    //     .map((card, i) => ({...card, id: i}));
-    if (mode === GameMode.Mode2x2) {
-        return _.chain(cardsData)
-            .take(2)
-            .map((card, i) => ({...card, id: i}))
+
+    if (mode === GameMode.Mode4x4) {
+        const uniqCards = _.chain(cardsData)
+            .take(4)
+            .value();
+
+        return _.times(4, () => uniqCards.slice())
+                .flat()
+                .map((card, i) => ({id: i, ...card}));
+    }
+
+    if (mode === GameMode.Mode5x6) {
+        const uniqCards = _.chain(cardsData)
+            .take(8)
+            .value();
+
+        return _.chain(_.times(4, () => uniqCards.slice()))
+            .flatten()
+            .take(30)
             .value();
     }
 
-    return _.chain(cardsData.concat(cardsData))
-        .map((card, i) => ({...card, id: i}))
-        .value();
+
+    if (mode === GameMode.Mode6x6) {
+        const uniqCards = _.chain(cardsData)
+            .take(9)
+            .value();
+
+
+        return _.times(4, () => uniqCards.slice())
+            .flat()
+            .map((card, i) => ({id: i, ...card}));
+    }
+
 };

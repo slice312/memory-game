@@ -29,20 +29,5 @@
         }
     }
 
-    .container {
-        border: 1px solid #DEDEDE;
-        padding: 12px;
-        box-shadow: 0 0 4px 4px #DEDEDE;
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        grid-template-rows: repeat(3, 1fr);
-        justify-items: center;
-        align-items: stretch;
-        gap: 1rem;
-        margin: 0 auto;
-        width: 100%;
-        height: 90%;
-        //perspective: 100%;
-        max-width: 720px;
-    }
+
 }
