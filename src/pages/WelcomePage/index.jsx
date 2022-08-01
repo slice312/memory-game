@@ -1,22 +1,28 @@
 import React from "react";
 import css from "./styles.module.scss";
-import {PlayerContext} from "src/playerContext";
-import {FormControl, InputLabel, Select, MenuItem, Button, TextField, FormHelperText} from "@mui/material";
+import {
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    Button,
+    TextField,
+    FormHelperText
+} from "@mui/material";
 import {useNavigate} from "react-router-dom";
+import {useForm, Controller} from "react-hook-form";
 
 
 export const WelcomePage = () => {
 
-    const {name, setName} = React.useContext(PlayerContext);
-
-    const [gameMode, setGameMode] = React.useState(4);
-
     const navigate = useNavigate();
 
-    const onFormSubmit = (e) => {
-        e.preventDefault();
-        console.log("submit");
-        navigate("/game");
+    const {control, handleSubmit} = useForm();
+
+    const onFormSubmit = (data) => {
+        if (data.name && data.gameMode) {
+            navigate("/game", {state: {name: data.name, mode: data.gameMode}});
+        }
     };
 
     return (
@@ -25,31 +31,51 @@ export const WelcomePage = () => {
                 <h1 className={css.pageTitle}>
                     Memory Game
                 </h1>
-                <form className={css.form} onSubmit={onFormSubmit}>
-                    <TextField
-                        id="outlined-basic"
-                        label="Name"
-                        variant="outlined"
-                        value={name}
-                        onChange={e => setName(e.target.value)}
+                <form className={css.form} onSubmit={handleSubmit(onFormSubmit)}>
+                    <Controller
+                        name="name"
+                        control={control}
+                        rules={{required: "Name required"}}
+                        defaultValue=""
+                        render={({field, fieldState}) => (
+                            <TextField
+                                name="name"
+                                label="Name"
+                                type="text"
+                                variant="outlined"
+                                value={field.value}
+                                error={!!fieldState.error}
+                                onChange={field.onChange}
+                                helperText={fieldState.error?.message}
+                            />
+                        )}
                     />
-                    <FormControl>
-                        <InputLabel id="game-mode-label">Game Mode</InputLabel>
-                        <Select
-                            labelId="game-mode-label"
-                            id="demo-simple-select-helper"
-                            value={gameMode}
-                            label="Game Mode"
-                            onChange={(e) => {
-                                setGameMode(e.target.value);
-                            }}
-                        >
-                            <MenuItem value={4}>2 x 2</MenuItem>
-                            <MenuItem value={16}>4 x 4</MenuItem>
-                            <MenuItem value={20}>5 x 4</MenuItem>
-                        </Select>
-                        <FormHelperText>With label + helper text</FormHelperText>
-                    </FormControl>
+
+                    <Controller
+                        name="gameMode"
+                        control={control}
+                        rules={{required: "Game mode required"}}
+                        defaultValue={4}
+                        render={({field, fieldState}) => (
+                            <FormControl>
+                                <InputLabel id="game-mode-label">
+                                    Game Mode
+                                </InputLabel>
+                                <Select
+                                    labelId="game-mode-label"
+                                    value={field.value}
+                                    label="Game Mode"
+                                    onChange={field.onChange}
+                                >
+                                    <MenuItem value={4}>2 x 2</MenuItem>
+                                    <MenuItem value={16}>4 x 4</MenuItem>
+                                    <MenuItem value={20}>5 x 4</MenuItem>
+                                </Select>
+                                <FormHelperText>With label + helper text</FormHelperText>
+                            </FormControl>
+                        )}
+                    />
+
                     <Button variant="contained" type="submit">
                         Play
                     </Button>

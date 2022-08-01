@@ -1,26 +1,24 @@
-import {useEffect, useState, useRef, useDebugValue} from "react";
-import {Button} from "@mui/material";
-import {cardsData} from "./data";
-import {ModalResult} from "./ModalResult";
-import {Card} from "./Card";
+import {useEffect, useState, useRef} from "react";
+import {cardsData} from "../../App/data";
+import {ModalResult} from "../../App/ModalResult";
+import {Card} from "../../App/Card";
 import _ from "lodash";
 import React from "react";
 import "./styles.scss";
-import {nanoid} from "nanoid";
-// import {PlayerContext} from "../playerContext/context";
+import {GameMode} from "src/shared/constants";
+import {useLocation} from "react-router-dom";
 
 
 export const Game = () => {
+    const location = useLocation();
+    console.log(location.state);
 
-    const [cards, setCards] = useState(getCards);
+    const [cards, setCards] = useState(() => getCards(location.state.mode));
 
     const [openedCardIds, setOpenedCardIds] = useState([]);
     const [clearedCards, setClearedCards] = useState([]);
 
     const [showModal, setShowModal] = useState(false);
-
-
-
 
 
     const timeoutHandlerId = useRef(null);
@@ -82,13 +80,6 @@ export const Game = () => {
 
     return (
         <div className="App">
-            {/*<header>*/}
-            {/*    <h3>Play the Flip card game</h3>*/}
-            {/*    <div>*/}
-            {/*        Select two cards with same content consequtively to make them vanish*/}
-            {/*    </div>*/}
-            {/*</header>*/}
-
             <div className="container">
                 {
                     cards.map((card, i) => {
@@ -132,14 +123,18 @@ export const Game = () => {
 };
 
 
-const getCards = () => {
-    const card = cardsData[0];
-    return [card ,card]
-        .map((card, i) => ({...card, id: i}));
+const getCards = (mode) => {
+    // const card = cardsData[0];
+    // return [card ,card]
+    //     .map((card, i) => ({...card, id: i}));
+    if (mode === GameMode.Mode2x2) {
+        return _.chain(cardsData)
+            .take(2)
+            .map((card, i) => ({...card, id: i}))
+            .value();
+    }
 
     return _.chain(cardsData.concat(cardsData))
-        .drop(5)
-        // .concat(cardsData)
         .map((card, i) => ({...card, id: i}))
         .value();
 };
