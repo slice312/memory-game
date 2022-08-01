@@ -7,7 +7,7 @@ import _ from "lodash";
 import React from "react";
 import "./styles.scss";
 import {nanoid} from "nanoid";
-import {PlayerContext} from "./playerContext/context";
+// import {PlayerContext} from "../playerContext/context";
 
 
 export const Game = () => {
@@ -133,8 +133,13 @@ export const Game = () => {
 
 
 const getCards = () => {
+    const card = cardsData[0];
+    return [card ,card]
+        .map((card, i) => ({...card, id: i}));
+
     return _.chain(cardsData.concat(cardsData))
-        .drop(0)
+        .drop(5)
+        // .concat(cardsData)
         .map((card, i) => ({...card, id: i}))
         .value();
 };
