@@ -1,28 +1,72 @@
 import React from "react";
 import {PlayerContext} from "./index";
+import store from "store";
+import _ from "lodash";
+import dayjs from "dayjs";
 
-1
 export const PlayerProvider = ({children}) => {
+    React.useEffect(() => {
+        console.log("FIRST INIT PROVIDER");
+
+    }, []);
+
+
     const [name, setName] = React.useState("")
+    const [gameMode, setGameMode] = React.useState(0);
+
     const [moves, setMoves] = React.useState(0);
 
 
     const [startTime, setStartTime] = React.useState(0);
-    const [endTime, setEndTime] = React.useState(0);
     const [isActive, setIsActive] = React.useState(false);
 
+
+    const saveResult = () => {
+
+        const elapsedTime = Date.now() - startTime;
+
+        const sec = Math.round(dayjs.duration(elapsedTime).asSeconds());
+
+        const score = sec * moves;
+
+        const result = {
+            name,
+            gameMode,
+            moves,
+            elapsedTime,
+            score
+        }
+
+        const leaderboard = store.get("leaderboard");
+        if (leaderboard) {
+
+            const existedRecIndex = leaderboard.findIndex(x => x.name === name);
+            if (existedRecIndex !== -1) {
+                const existedRec = leaderboard[existedRecIndex];
+                if (existedRec.score >= result.score) {
+                    leaderboard[existedRecIndex] = result;
+                }
+            } else {
+                leaderboard.push(result);
+            }
+
+            store.set("leaderboard", leaderboard);
+        }
+        else {
+            store.set("leaderboard", [result]);
+        }
+    };
 
 
     const startGame = () => {
         setMoves(0);
         setStartTime(Date.now());
-        setEndTime(0);
         setIsActive(true);
     };
 
     const stopGame = () => {
-        setEndTime(Date.now());
         setIsActive(false);
+        saveResult();
     };
 
     const addMove = () => setMoves(prev => prev + 1);
@@ -30,6 +74,8 @@ export const PlayerProvider = ({children}) => {
     const value = {
         name,
         setName,
+        gameMode,
+        setGameMode,
         moves,
         addMove,
         startGame,

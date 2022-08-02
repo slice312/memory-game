@@ -6,6 +6,10 @@ import reportWebVitals from './reportWebVitals';
 import {BrowserRouter} from "react-router-dom";
 
 
+import duration from 'dayjs/plugin/duration';
+import dayjs from "dayjs";
+dayjs.extend(duration)
+
 import "./styles/null.scss";
 
 

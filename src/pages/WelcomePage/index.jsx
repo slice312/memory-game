@@ -12,10 +12,12 @@ import {
 import {useNavigate} from "react-router-dom";
 import {useForm, Controller} from "react-hook-form";
 import {GameMode} from "src/shared/constants";
+import {PlayerContext} from "src/playerContext";
 
 
 
 export const WelcomePage = () => {
+    const playerContext = React.useContext(PlayerContext);
 
     const navigate = useNavigate();
 
@@ -23,6 +25,8 @@ export const WelcomePage = () => {
 
     const onFormSubmit = (data) => {
         if (data.name && data.gameMode) {
+            playerContext.setName(data.name);
+            playerContext.setGameMode(data.gameMode);
             navigate("/game", {state: {name: data.name, mode: data.gameMode}});
         }
     };
@@ -38,7 +42,7 @@ export const WelcomePage = () => {
                         name="name"
                         control={control}
                         rules={{required: "Name required"}}
-                        defaultValue="Tala"
+                        defaultValue={playerContext.name}
                         render={({field, fieldState}) => (
                             <TextField
                                 name="name"
@@ -70,7 +74,7 @@ export const WelcomePage = () => {
                                     label="Game Mode"
                                     onChange={field.onChange}
                                 >
-                                    <MenuItem value={GameMode.Mode4x3}>4 x 3</MenuItem>
+                                    <MenuItem value={GameMode.Mode3x4}>3 x 4</MenuItem>
                                     <MenuItem value={GameMode.Mode4x4}>4 x 4</MenuItem>
                                     <MenuItem value={GameMode.Mode5x6}>5 x 6</MenuItem>
                                     <MenuItem value={GameMode.Mode6x6}>6 x 6</MenuItem>
