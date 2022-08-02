@@ -3,6 +3,7 @@ import {Game} from "../pages/Game";
 import {PlayerProvider} from "src/playerContext/provider";
 import {BrowserRouter, Route, Routes, Navigate} from "react-router-dom";
 import {WelcomePage} from "src/pages/WelcomePage";
+import {Leaderboard} from "src/pages/Leaderboard";
 
 
 export const App = () => {
@@ -15,6 +16,7 @@ export const App = () => {
 
                 </Route>
                 <Route path="/game" element={<Game/>}/>
+                <Route path="/leaderboard" element={<Leaderboard/>}/>
             </Routes>
         </PlayerProvider>
     );

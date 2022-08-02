@@ -142,6 +142,7 @@ export const Game = () => {
             <ModalResult
                 showModal={showModal}
                 onRestart={handleRestart}
+                onClose={() => setShowModal(false)}
             />
         </div>
     );

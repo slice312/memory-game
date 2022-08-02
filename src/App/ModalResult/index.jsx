@@ -10,11 +10,24 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
 import css from "./styles.module.scss";
-import {PlayerContext} from "../../playerContext";
+import {PlayerContext} from "src/playerContext";
+import {useNavigate} from "react-router-dom";
 
 
-export const ModalResult = ({showModal, onRestart}) => {
+export const ModalResult = ({showModal, onRestart, onClose}) => {
     const playerContext = React.useContext(PlayerContext);
+
+    const innerOnClose = () => {
+        onClose();
+    };
+
+
+    const navigate = useNavigate();
+
+    const redirectToLeaderboard = () => {
+        navigate("/leaderboard");
+    };
+
 
     return (
         <Dialog
@@ -22,7 +35,7 @@ export const ModalResult = ({showModal, onRestart}) => {
             maxWidth={false}
         >
             <DialogTitle sx={{m: 0, p: 2}}>
-                Modal Title
+                Result
                 <IconButton
                     aria-label="close"
                     // onClick={}
@@ -36,24 +49,28 @@ export const ModalResult = ({showModal, onRestart}) => {
                     <CloseIcon/>
                 </IconButton>
             </DialogTitle>
-            <DialogContent dividers>
-                <Typography  variant="body1" gutterBottom>
-                    Cras mattis consectetur purus sit amet fermentum. Cras justo odio,
-                    dapibus ac facilisis in, egestas eget quam. Morbi leo risus, porta ac
-                    consectetur ac, vestibulum at eros.
+            <DialogContent dividers className={css.content}>
+                <Typography variant="h4" align="center" gutterBottom>
+                    Game Mode: {playerContext.gameMode}
                 </Typography>
-                <Typography gutterBottom>
-                    Praesent commodo cursus magna, vel scelerisque nisl consectetur et.
-                    Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor.
+                <Typography variant="h5" gutterBottom>
+                    Time: {2}
                 </Typography>
-                <Typography gutterBottom>
-                    Aenean lacinia bibendum nulla sed consectetur. Praesent commodo cursus
-                    magna, vel scelerisque nisl consectetur et. Donec sed odio dui. Donec
-                    ullamcorper nulla non metus auctor fringilla.
+                <Typography variant="h5">
+                    Moves: {playerContext.moves}
+                </Typography>
+                <Typography variant="h5">
+                    Score: {playerContext.moves}
                 </Typography>
             </DialogContent>
-
-
+            <DialogActions>
+                <Button autoFocus onClick={innerOnClose}>
+                    Play again
+                </Button>
+                <Button onClick={redirectToLeaderboard}>
+                    Leaderboard
+                </Button>
+            </DialogActions>
         </Dialog>
     );
 };

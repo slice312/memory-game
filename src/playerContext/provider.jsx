@@ -11,7 +11,7 @@ export const PlayerProvider = ({children}) => {
     }, []);
 
 
-    const [name, setName] = React.useState("")
+    const [name, setName] = React.useState("");
     const [gameMode, setGameMode] = React.useState(0);
 
     const [moves, setMoves] = React.useState(0);
@@ -22,7 +22,6 @@ export const PlayerProvider = ({children}) => {
 
 
     const saveResult = () => {
-
         const elapsedTime = Date.now() - startTime;
 
         const sec = Math.round(dayjs.duration(elapsedTime).asSeconds());
@@ -35,24 +34,21 @@ export const PlayerProvider = ({children}) => {
             moves,
             elapsedTime,
             score
-        }
+        };
 
         const leaderboard = store.get("leaderboard");
         if (leaderboard) {
-
             const existedRecIndex = leaderboard.findIndex(x => x.name === name);
             if (existedRecIndex !== -1) {
                 const existedRec = leaderboard[existedRecIndex];
                 if (existedRec.score >= result.score) {
                     leaderboard[existedRecIndex] = result;
                 }
-            } else {
+            } else
                 leaderboard.push(result);
-            }
-
             store.set("leaderboard", leaderboard);
-        }
-        else {
+
+        } else {
             store.set("leaderboard", [result]);
         }
     };
