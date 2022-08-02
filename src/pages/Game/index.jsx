@@ -1,7 +1,5 @@
-import {cardsData} from "../../App/data";
 import {ModalResult} from "../../App/ModalResult";
 import {Card} from "../../App/Card";
-import _ from "lodash";
 import React from "react";
 import "./styles.scss";
 import {Link, Navigate, useParams} from "react-router-dom";
@@ -9,55 +7,23 @@ import {GameMode} from "src/shared/constants";
 
 import {PlayerContext} from "src/playerContext";
 import {CardsGridContainer} from "./CardsGridContainer";
-import {Button} from "@mui/material";
+import {Button} from "@mui/material";2
 
 import {Stopwatch} from "./Stopwatch";
-import {View} from "./View";
+import {gameModel, getCards, GameAction} from "./model";
 
-
-const initialState = {
-    cards: [],
-    openedCardIds: [],
-    clearedCardIds: []
-};
-
-const reducer = (state, action) => {
-    switch (action.type) {
-        case "set_cards":
-            return {...state, cards: action.payload};
-        case "reset": {
-            return initialState;
-        }
-        case "opened_card": {
-            return {
-                ...state,
-                openedCardIds: [...state]
-            }
-        }
-        case "clear_cards": {
-            return {
-                ...state,
-                clearedCardIds: [...state.clearedCardIds, ...action.payload]
-            }
-        }
-    }
-
-};
 
 
 export const Game = () => {
+
+    console.log("Game");
     const playerContext = React.useContext(PlayerContext);
-
-    const [state, dispatch] = React.useReducer(reducer, initialState);
-
+    const [state, dispatch] = React.useReducer(gameModel.reducer, gameModel.initialState);
     const {gameMode} = useParams();
-
     React.useEffect(() => {
-        console.log("Effect");
-        dispatch({type: "set_cards", payload: getCards(gameMode)});
+        dispatch({type: GameAction.SetCards, payload: getCards(gameMode)});
     }, [gameMode]);
 
-    const [openedCardIds, setOpenedCardIds] = React.useState([]);
 
     const [showModal, setShowModal] = React.useState(false);
 
@@ -66,37 +32,48 @@ export const Game = () => {
 
 
     const timeoutHandlerId = React.useRef(null);
+
+
+    const refIsDisabledCards = React.useRef(false);
+
+
     React.useEffect(() => {
-        if (openedCardIds.length === 2) {
-            const [firstCardId, secondCardId] = openedCardIds;
+        if (state.openedCardIds.length === 2) {
+            const [firstCardId, secondCardId] = state.openedCardIds;
             const firstCard = state.cards.find(x => x.id === firstCardId);
             const secondCard = state.cards.find(x => x.id === secondCardId);
 
             if (firstCard.type === secondCard.type) {
+                refIsDisabledCards.current = true;
                 setTimeout(() => {
-                    setOpenedCardIds([]);
-                    dispatch({type: "clear_cards", payload: openedCardIds})
-                }, 700);
+                    dispatch({type: GameAction.MatchedCards});
+                    refIsDisabledCards.current = false;
+                }, 400);
             } else {
-                timeoutHandlerId.current = setTimeout(() => setOpenedCardIds([]), 3000);
+                timeoutHandlerId.current = setTimeout(
+                    () => dispatch({type: GameAction.ClosedCards}),
+                    3000
+                );
             }
         }
-    }, [openedCardIds]);
+    }, [state.openedCardIds]);
 
 
     const handleCardClick = (card) => {
+        if (refIsDisabledCards.current)
+            return;
+
         if (!playerContext.isActive) {
             playerContext.startGame();
             stopwatchRef.current.start();
         }
 
         playerContext.addMove();
-        if (openedCardIds.length === 2) {
-            dispatch({type: "opened_cards", payload: {cardId: card.id}})
-            setOpenedCardIds([card.id]);
+        setTimeout(() => {
+            dispatch({type: GameAction.OpenedCards, payload: {cardId: card.id}});
+        });
+        if (state.openedCardIds.length === 2)
             clearTimeout(timeoutHandlerId.current);
-        } else
-            setOpenedCardIds(prev => [...prev, card.id]);
     };
 
     const checkCompletion = () => {
@@ -114,10 +91,9 @@ export const Game = () => {
 
 
     const handleRestart = () => {
-        // setClearedCardIds([]);
-        setOpenedCardIds([]);
+        dispatch({type: GameAction.Reset});
+        dispatch({type: GameAction.SetCards(), payload: getCards(gameMode)});
         setShowModal(false);
-        // setCards(() => getCards(params.mode)); //TODO: doit
         playerContext.resetGame();
         stopwatchRef.current.stop();
         stopwatchRef.current.reset();
@@ -151,7 +127,7 @@ export const Game = () => {
                                 key={card.id}
                                 card={card}
                                 isInactive={state.clearedCardIds.includes(card.id)}
-                                isFlipped={openedCardIds.includes(card.id)}
+                                isFlipped={state.openedCardIds.includes(card.id)}
                                 onClick={handleCardClick}
                             />
                         );
@@ -189,47 +165,3 @@ export const Game = () => {
 };
 
 
-/**
- * @param {GameMode} mode
- */
-const getCards = (mode) => {
-    let cards;
-
-    if (mode === GameMode.Mode3x4) {
-        const uniqCards = getUniqueCards(6);
-        cards = _.times(2, () => uniqCards.slice())
-            .flat();
-    }
-
-    if (mode === GameMode.Mode4x4) {
-        const uniqCards = getUniqueCards(4);
-        cards = _.times(4, () => uniqCards.slice())
-            .flat();
-    }
-
-    if (mode === GameMode.Mode5x6) {
-        const uniqCards = getUniqueCards(8);
-        cards = _.chain(_.times(4, () => uniqCards.slice()))
-            .flatten()
-            .take(30)
-            .value();
-    }
-
-    if (mode === GameMode.Mode6x6) {
-        const uniqCards = getUniqueCards(9);
-        cards = _.times(4, () => uniqCards.slice())
-            .flat();
-    }
-
-    return _.chain(cards)
-        .shuffle() // TODO: вернуть
-        .map((card, i) => ({id: i, ...card}))
-        .value();
-};
-
-
-const getUniqueCards = (qty) => {
-    return _.chain(cardsData)
-        .take(qty)
-        .value();
-};
