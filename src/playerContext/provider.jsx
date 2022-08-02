@@ -1,18 +1,29 @@
 import React from "react";
 import {PlayerContext} from "./index";
-import _ from "lodash";
-import {cardsData} from "../App/data";
 
-
+1
 export const PlayerProvider = ({children}) => {
-
     const [name, setName] = React.useState("")
     const [moves, setMoves] = React.useState(0);
-    const [timeSpan, setTimeSpan] = React.useState(0);
 
-    const [elapsedTime, setElapsedTime] = React.useState("");
 
-    const resetMoves = () => setMoves(0);
+    const [startTime, setStartTime] = React.useState(0);
+    const [endTime, setEndTime] = React.useState(0);
+    const [isActive, setIsActive] = React.useState(false);
+
+
+
+    const startGame = () => {
+        setMoves(0);
+        setStartTime(Date.now());
+        setEndTime(0);
+        setIsActive(true);
+    };
+
+    const stopGame = () => {
+        setEndTime(Date.now());
+        setIsActive(false);
+    };
 
     const addMove = () => setMoves(prev => prev + 1);
 
@@ -20,16 +31,17 @@ export const PlayerProvider = ({children}) => {
         name,
         setName,
         moves,
-        resetMoves,
         addMove,
-        setTimeSpan
+        startGame,
+        stopGame,
+        isActive
     };
 
     return (
         <PlayerContext.Provider value={value}>
             {children}
         </PlayerContext.Provider>
-    )
-}
+    );
+};
 
 

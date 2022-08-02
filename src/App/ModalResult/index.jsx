@@ -1,3 +1,4 @@
+import React from "react";
 import {
     Button,
     Dialog,
@@ -9,9 +10,12 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
 import css from "./styles.module.scss";
+import {PlayerContext} from "../../playerContext";
 
 
 export const ModalResult = ({showModal, onRestart}) => {
+    const playerContext = React.useContext(PlayerContext);
+
     return (
         <Dialog
             open={showModal}

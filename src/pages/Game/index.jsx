@@ -1,4 +1,3 @@
-import {useEffect, useState, useRef} from "react";
 import {cardsData} from "../../App/data";
 import {ModalResult} from "../../App/ModalResult";
 import {Card} from "../../App/Card";
@@ -9,24 +8,29 @@ import {GameMode} from "src/shared/constants";
 import {useLocation} from "react-router-dom";
 import {value} from "lodash/seq";
 
+import {PlayerContext} from "src/playerContext";
 import {CardsGridContainer} from "./CardsGridContainer";
+import {Button} from "@mui/material";
 
-
+import {Stopwatch} from "./Stopwatch";
 
 
 export const Game = () => {
     const location = useLocation();
-    console.log(location.state);
 
-    const [cards, setCards] = useState(() => getCards(location.state.mode));
+    const playerContext = React.useContext(PlayerContext);
 
-    const [openedCardIds, setOpenedCardIds] = useState([]);
-    const [clearedCards, setClearedCards] = useState([]);
+    const [cards, setCards] = React.useState(() => getCards(location.state.mode));
 
-    const [showModal, setShowModal] = useState(false);
+    const [openedCardIds, setOpenedCardIds] = React.useState([]);
+    const [clearedCards, setClearedCards] = React.useState([]);
+
+    const [showModal, setShowModal] = React.useState(false);
+
+    const stopwatchRef = React.useRef();
 
 
-    const timeoutHandlerId = useRef(null);
+    const timeoutHandlerId = React.useRef(null);
     React.useEffect(() => {
         if (openedCardIds.length === 2) {
             const [firstCardId, secondCardId] = openedCardIds;
@@ -34,7 +38,6 @@ export const Game = () => {
             const secondCard = cards.find(x => x.id === secondCardId);
 
             if (firstCard.type === secondCard.type) {
-                // debugger
                 setTimeout(() => {
                     setOpenedCardIds([]);
                     setClearedCards(prev => [...prev, ...openedCardIds]);
@@ -46,17 +49,13 @@ export const Game = () => {
     }, [openedCardIds]);
 
 
-    React.useEffect(() => {
-        if (1 === 3) {
-            // TODO: уровень сложности какой-то
-            const handler = setInterval(() => {
-                setCards(prev => _.shuffle(prev));
-            }, 5_000);
-            return () => clearInterval(handler);
-        }
-    }, []);
-
     const handleCardClick = (card) => {
+        if (!playerContext.isActive) {
+            playerContext.startGame();
+            stopwatchRef.current.start();
+        }
+
+        playerContext.addMove();
         if (openedCardIds.length === 2) {
             setOpenedCardIds([card.id]);
             clearTimeout(timeoutHandlerId.current);
@@ -66,12 +65,14 @@ export const Game = () => {
 
     const checkCompletion = () => {
         if (Object.keys(clearedCards).length === cards.length) {
+            playerContext.stopGame();
+            stopwatchRef.current.stop();
             setShowModal(true);
         }
     };
 
 
-    useEffect(() => {
+    React.useEffect(() => {
         checkCompletion();
     }, [clearedCards]);
 
@@ -80,11 +81,19 @@ export const Game = () => {
         setClearedCards([]);
         setOpenedCardIds([]);
         setShowModal(false);
-        setCards(getCards);
+        setCards(() => getCards(location.state.mode));
+        playerContext.stopGame();
+        stopwatchRef.current.stop();
+        stopwatchRef.current.reset();
     };
 
     let rows = 4;
     let columns = 4;
+
+    if (location.state.mode === GameMode.Mode3x4) {
+        rows = 3;
+        columns = 4;
+    }
 
     if (location.state.mode === GameMode.Mode5x6) {
         rows = 5;
@@ -114,23 +123,21 @@ export const Game = () => {
                 }
             </CardsGridContainer>
 
-            {/*<footer>*/}
-            {/*    <div className="score">*/}
-            {/*        <div className="moves">*/}
-            {/*            <span className="bold">Moves:</span> {moves}*/}
-            {/*        </div>*/}
-            {/*        {localStorage.getItem("bestScore") && (*/}
-            {/*            <div className="high-score">*/}
-            {/*                <span className="bold">Best Score:</span> {bestScore}*/}
-            {/*            </div>*/}
-            {/*        )}*/}
-            {/*    </div>*/}
-            {/*    <div className="restart">*/}
-            {/*        <Button onClick={handleRestart} color="primary" variant="contained">*/}
-            {/*            Restart*/}
-            {/*        </Button>*/}
-            {/*    </div>*/}
-            {/*</footer>*/}
+            <footer>
+                <div className="score">
+                    <div className="moves">
+                        <span className="bold">Moves:</span> {playerContext.moves}
+                    </div>
+                    <div>
+                        <Stopwatch ref={stopwatchRef}/>
+                    </div>
+                </div>
+                <div className="restart">
+                    <Button onClick={handleRestart} color="primary" variant="contained">
+                        Restart
+                    </Button>
+                </div>
+            </footer>
 
             <ModalResult
                 showModal={showModal}
@@ -145,38 +152,43 @@ export const Game = () => {
  * @param {GameMode} mode
  */
 const getCards = (mode) => {
+    let cards;
+
+    if (mode === GameMode.Mode3x4) {
+        const uniqCards = getUniqueCards(6);
+        cards = _.times(2, () => uniqCards.slice())
+            .flat();
+    }
 
     if (mode === GameMode.Mode4x4) {
-        const uniqCards = _.chain(cardsData)
-            .take(4)
-            .value();
-
-        return _.times(4, () => uniqCards.slice())
-                .flat()
-                .map((card, i) => ({id: i, ...card}));
+        const uniqCards = getUniqueCards(4);
+        cards = _.times(4, () => uniqCards.slice())
+            .flat();
     }
 
     if (mode === GameMode.Mode5x6) {
-        const uniqCards = _.chain(cardsData)
-            .take(8)
-            .value();
-
-        return _.chain(_.times(4, () => uniqCards.slice()))
+        const uniqCards = getUniqueCards(8);
+        cards = _.chain(_.times(4, () => uniqCards.slice()))
             .flatten()
             .take(30)
             .value();
     }
 
-
     if (mode === GameMode.Mode6x6) {
-        const uniqCards = _.chain(cardsData)
-            .take(9)
-            .value();
-
-
-        return _.times(4, () => uniqCards.slice())
-            .flat()
-            .map((card, i) => ({id: i, ...card}));
+        const uniqCards = getUniqueCards(9);
+        cards = _.times(4, () => uniqCards.slice())
+            .flat();
     }
 
+    return _.chain(cards)
+        .shuffle()
+        .map((card, i) => ({id: i, ...card}))
+        .value();
+};
+
+
+const getUniqueCards = (qty) => {
+    return _.chain(cardsData)
+        .take(qty)
+        .value();
 };

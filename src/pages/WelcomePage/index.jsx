@@ -58,7 +58,7 @@ export const WelcomePage = () => {
                         name="gameMode"
                         control={control}
                         rules={{required: "Game mode required"}}
-                        defaultValue={GameMode.Mode4x4}
+                        defaultValue={GameMode.Mode3x4}
                         render={({field, fieldState}) => (
                             <FormControl>
                                 <InputLabel id="game-mode-label">
@@ -70,6 +70,7 @@ export const WelcomePage = () => {
                                     label="Game Mode"
                                     onChange={field.onChange}
                                 >
+                                    <MenuItem value={GameMode.Mode4x3}>4 x 3</MenuItem>
                                     <MenuItem value={GameMode.Mode4x4}>4 x 4</MenuItem>
                                     <MenuItem value={GameMode.Mode5x6}>5 x 6</MenuItem>
                                     <MenuItem value={GameMode.Mode6x6}>6 x 6</MenuItem>
