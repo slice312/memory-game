@@ -19,9 +19,13 @@ import {PlayerContext} from "src/playerContext";
 export const WelcomePage = () => {
     const playerContext = React.useContext(PlayerContext);
 
+    React.useEffect(() => {
+        setValue("name", playerContext.name);
+    }, [playerContext.name])
+
     const navigate = useNavigate();
 
-    const {control, handleSubmit} = useForm();
+    const {control, handleSubmit, setValue} = useForm();
 
     const onFormSubmit = (data) => {
         if (data.name && data.gameMode) {
@@ -79,7 +83,7 @@ export const WelcomePage = () => {
                                     <MenuItem value={GameMode.Mode5x6}>5 x 6</MenuItem>
                                     <MenuItem value={GameMode.Mode6x6}>6 x 6</MenuItem>
                                 </Select>
-                                <FormHelperText>With label + helper text</FormHelperText>
+                                <FormHelperText>Cards grid size</FormHelperText>
                             </FormControl>
                         )}
                     />
@@ -87,6 +91,9 @@ export const WelcomePage = () => {
                     <Button variant="contained" type="submit">
                         Play
                     </Button>
+                    <Link variant="contained" type="submit" >
+                        Play
+                    </Link>
                 </form>
             </div>
         </div>

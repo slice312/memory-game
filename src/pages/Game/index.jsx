@@ -82,7 +82,7 @@ export const Game = () => {
         setOpenedCardIds([]);
         setShowModal(false);
         setCards(() => getCards(location.state.mode));
-        playerContext.stopGame();
+        playerContext.resetGame();
         stopwatchRef.current.stop();
         stopwatchRef.current.reset();
     };

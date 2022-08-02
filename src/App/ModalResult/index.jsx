@@ -18,6 +18,7 @@ export const ModalResult = ({showModal, onRestart, onClose}) => {
     const playerContext = React.useContext(PlayerContext);
 
     const innerOnClose = () => {
+        onRestart();
         onClose();
     };
 
@@ -34,11 +35,11 @@ export const ModalResult = ({showModal, onRestart, onClose}) => {
             open={showModal}
             maxWidth={false}
         >
-            <DialogTitle sx={{m: 0, p: 2}}>
+            <DialogTitle sx={{m: 0, p: 2}} variant="h4">
                 Result
                 <IconButton
                     aria-label="close"
-                    // onClick={}
+                    onClick={innerOnClose}
                     sx={{
                         position: 'absolute',
                         right: 8,
@@ -49,21 +50,21 @@ export const ModalResult = ({showModal, onRestart, onClose}) => {
                     <CloseIcon/>
                 </IconButton>
             </DialogTitle>
-            <DialogContent dividers className={css.content}>
-                <Typography variant="h4" align="center" gutterBottom>
-                    Game Mode: {playerContext.gameMode}
+            <DialogContent dividers className={css.content} sx={{padding: "30px 80px 50px 80px"}}>
+                <Typography variant="h4" sx={{mb: 5}}>
+                    Game over!
                 </Typography>
                 <Typography variant="h5" gutterBottom>
                     Time: {2}
                 </Typography>
-                <Typography variant="h5">
+                <Typography variant="h5" gutterBottom>
                     Moves: {playerContext.moves}
                 </Typography>
-                <Typography variant="h5">
+                <Typography variant="h5" gutterBottom>
                     Score: {playerContext.moves}
                 </Typography>
             </DialogContent>
-            <DialogActions>
+            <DialogActions sx={{justifyContent: "center", p: 1}}>
                 <Button autoFocus onClick={innerOnClose}>
                     Play again
                 </Button>

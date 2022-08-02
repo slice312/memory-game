@@ -7,6 +7,9 @@ import dayjs from "dayjs";
 export const PlayerProvider = ({children}) => {
     React.useEffect(() => {
         console.log("FIRST INIT PROVIDER");
+        const user = store.get("user");
+        if (user)
+            setName(user.name);
 
     }, []);
 
@@ -21,7 +24,17 @@ export const PlayerProvider = ({children}) => {
     const [isActive, setIsActive] = React.useState(false);
 
 
+    React.useEffect(() => {
+        console.log("ASVED");
+        if (name)
+            store.set("user", {name});
+    }, [name]);
+
+
     const saveResult = () => {
+        if (!name)
+            return;
+
         const elapsedTime = Date.now() - startTime;
 
         const sec = Math.round(dayjs.duration(elapsedTime).asSeconds());
@@ -65,6 +78,11 @@ export const PlayerProvider = ({children}) => {
         saveResult();
     };
 
+    const resetGame = () => {
+        setMoves(0)
+        setIsActive(false);
+    };
+
     const addMove = () => setMoves(prev => prev + 1);
 
     const value = {
@@ -76,6 +94,7 @@ export const PlayerProvider = ({children}) => {
         addMove,
         startGame,
         stopGame,
+        resetGame,
         isActive
     };
 

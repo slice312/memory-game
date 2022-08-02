@@ -1,8 +1,10 @@
 import React, {useState} from "react";
-// import img from "../assents/img/fon.jpg";
 import {Link} from "react-router-dom";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 import "./styles.scss";
+import store from "store";
+import dayjs from "dayjs";
+import cn from "classnames";
 
 const data = [
     {id: 0, label: "timeSpan"},
@@ -35,6 +37,11 @@ export const Leaderboard = () => {
         selectedItems == id ? setSelectedItems(null) : setSelectedItems(id);
         setOpens(!isOpens);
     };
+
+
+    const leaderboard = store.get("leaderboard") || [];
+    const currentUser = store.get("user");
+
     return (
         <div className="leaderboard">
             <div className="leaderboard__container">
@@ -49,8 +56,6 @@ export const Leaderboard = () => {
                         <Link to="/" className="back">
                             Home
                         </Link>
-
-
                     </div>
                     <div className="loader"></div>
                     <div className="dropdown_block">
@@ -104,24 +109,39 @@ export const Leaderboard = () => {
                         </div>
                     </div>
                     <div className="info__footer">
-                        <div className="info__user red_mode">
-                            <div className="user__number">
-                                <p>1</p>
-                            </div>
-                            <div className="user__name">
-                                <div className="user__name-one">
-                                    {/*<img src={img} alt=""/>*/}
-                                    <p className="name">Sardor</p>
-                                </div>
-                                <div className="user__name-two">
-                                    <p>score: 12</p>
+                        {
+                            leaderboard.map((x, i) => {
+                                const duration = dayjs.duration(x.elapsedTime);
+                                const timeStr = dayjs.duration({
+                                    seconds: duration.seconds(),
+                                    minutes: duration.minutes()
+                                }).format("mm:ss");
 
-
-                                    <p>time: 00:00</p>
-                                    <p>moves: 2</p>
-                                </div>
-                            </div>
-                        </div>
+                                const isCurrentUser = x.name === currentUser?.name;
+                                // debugger
+                                return (
+                                    <div className={cn("info__user", {
+                                        ["black_mode"]: !isCurrentUser,
+                                        ["red_mode"]: isCurrentUser
+                                    })} key={i}>
+                                        <div className="user__number">
+                                            <p>{i + 1}</p>
+                                        </div>
+                                        <div className="user__name">
+                                            <div className="user__name-one">
+                                                {/*<img src={img} alt=""/>*/}
+                                                <p className="name">{x.name}</p>
+                                            </div>
+                                            <div className="user__name-two">
+                                                <p>score: {x.score}</p>
+                                                <p>time: {timeStr}</p>
+                                                <p>moves: {x.moves}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })
+                        }
                     </div>
                 </div>
             </div>
