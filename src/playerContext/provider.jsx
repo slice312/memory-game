@@ -10,12 +10,10 @@ export const PlayerProvider = ({children}) => {
         const user = store.get("user");
         if (user)
             setName(user.name);
-
     }, []);
 
 
     const [name, setName] = React.useState("");
-    const [gameMode, setGameMode] = React.useState(0);
 
     const [moves, setMoves] = React.useState(0);
     const [score, setScore] = React.useState(0);
@@ -46,11 +44,12 @@ export const PlayerProvider = ({children}) => {
 
         const result = {
             name,
-            gameMode,
+            // gameMode, // TODO: проблема
             moves,
             elapsedTime,
             score
         };
+
 
         const leaderboard = store.get("leaderboard");
         if (leaderboard) {
@@ -91,8 +90,6 @@ export const PlayerProvider = ({children}) => {
     const value = {
         name,
         setName,
-        gameMode,
-        setGameMode,
         moves,
         addMove,
         startGame,

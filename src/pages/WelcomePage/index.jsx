@@ -30,8 +30,7 @@ export const WelcomePage = () => {
     const onFormSubmit = (data) => {
         if (data.name && data.gameMode) {
             playerContext.setName(data.name);
-            playerContext.setGameMode(data.gameMode);
-            navigate("/game");
+            navigate(`/game/${data.gameMode}`);
         }
     };
 

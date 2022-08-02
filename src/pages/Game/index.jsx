@@ -4,7 +4,7 @@ import {Card} from "../../App/Card";
 import _ from "lodash";
 import React from "react";
 import "./styles.scss";
-import {Link, Navigate} from "react-router-dom";
+import {Link, Navigate, useParams} from "react-router-dom";
 import {GameMode} from "src/shared/constants";
 
 import {PlayerContext} from "src/playerContext";
@@ -12,19 +12,55 @@ import {CardsGridContainer} from "./CardsGridContainer";
 import {Button} from "@mui/material";
 
 import {Stopwatch} from "./Stopwatch";
+import {View} from "./View";
+
+
+const initialState = {
+    cards: [],
+    openedCardIds: [],
+    clearedCardIds: []
+};
+
+const reducer = (state, action) => {
+    switch (action.type) {
+        case "set_cards":
+            return {...state, cards: action.payload};
+        case "reset": {
+            return initialState;
+        }
+        case "opened_card": {
+            return {
+                ...state,
+                openedCardIds: [...state]
+            }
+        }
+        case "clear_cards": {
+            return {
+                ...state,
+                clearedCardIds: [...state.clearedCardIds, ...action.payload]
+            }
+        }
+    }
+
+};
 
 
 export const Game = () => {
     const playerContext = React.useContext(PlayerContext);
-    if (!playerContext.name || !playerContext.gameMode)
-        return <Navigate to="/"/>;
 
-    const [cards, setCards] = React.useState(() => getCards(playerContext.gameMode));
+    const [state, dispatch] = React.useReducer(reducer, initialState);
+
+    const {gameMode} = useParams();
+
+    React.useEffect(() => {
+        console.log("Effect");
+        dispatch({type: "set_cards", payload: getCards(gameMode)});
+    }, [gameMode]);
 
     const [openedCardIds, setOpenedCardIds] = React.useState([]);
-    const [clearedCards, setClearedCards] = React.useState([]);
 
     const [showModal, setShowModal] = React.useState(false);
+
 
     const stopwatchRef = React.useRef();
 
@@ -33,13 +69,13 @@ export const Game = () => {
     React.useEffect(() => {
         if (openedCardIds.length === 2) {
             const [firstCardId, secondCardId] = openedCardIds;
-            const firstCard = cards.find(x => x.id === firstCardId);
-            const secondCard = cards.find(x => x.id === secondCardId);
+            const firstCard = state.cards.find(x => x.id === firstCardId);
+            const secondCard = state.cards.find(x => x.id === secondCardId);
 
             if (firstCard.type === secondCard.type) {
                 setTimeout(() => {
                     setOpenedCardIds([]);
-                    setClearedCards(prev => [...prev, ...openedCardIds]);
+                    dispatch({type: "clear_cards", payload: openedCardIds})
                 }, 700);
             } else {
                 timeoutHandlerId.current = setTimeout(() => setOpenedCardIds([]), 3000);
@@ -56,6 +92,7 @@ export const Game = () => {
 
         playerContext.addMove();
         if (openedCardIds.length === 2) {
+            dispatch({type: "opened_cards", payload: {cardId: card.id}})
             setOpenedCardIds([card.id]);
             clearTimeout(timeoutHandlerId.current);
         } else
@@ -63,7 +100,7 @@ export const Game = () => {
     };
 
     const checkCompletion = () => {
-        if (Object.keys(clearedCards).length === cards.length) {
+        if (state.cards.length && Object.keys(state.clearedCardIds).length === state.cards.length) {
             playerContext.stopGame();
             stopwatchRef.current.stop();
             setShowModal(true);
@@ -73,14 +110,14 @@ export const Game = () => {
 
     React.useEffect(() => {
         checkCompletion();
-    }, [clearedCards]);
+    }, [state.clearedCardIds]);
 
 
     const handleRestart = () => {
-        setClearedCards([]);
+        // setClearedCardIds([]);
         setOpenedCardIds([]);
         setShowModal(false);
-        setCards(() => getCards(playerContext.gameMode));
+        // setCards(() => getCards(params.mode)); //TODO: doit
         playerContext.resetGame();
         stopwatchRef.current.stop();
         stopwatchRef.current.reset();
@@ -89,17 +126,17 @@ export const Game = () => {
     let rows = 4;
     let columns = 4;
 
-    if (playerContext.gameMode === GameMode.Mode3x4) {
+    if (gameMode === GameMode.Mode3x4) {
         rows = 3;
         columns = 4;
     }
 
-    if (playerContext.gameMode === GameMode.Mode5x6) {
+    if (gameMode === GameMode.Mode5x6) {
         rows = 5;
         columns = 6;
     }
 
-    if (playerContext.gameMode === GameMode.Mode6x6) {
+    if (gameMode === GameMode.Mode6x6) {
         rows = 6;
         columns = 6;
     }
@@ -108,12 +145,12 @@ export const Game = () => {
         <div className="App">
             <CardsGridContainer rows={rows} columns={columns}>
                 {
-                    cards.map((card, i) => {
+                    state.cards.map((card, i) => {
                         return (
                             <Card
                                 key={card.id}
                                 card={card}
-                                isInactive={clearedCards.includes(card.id)}
+                                isInactive={state.clearedCardIds.includes(card.id)}
                                 isFlipped={openedCardIds.includes(card.id)}
                                 onClick={handleCardClick}
                             />
