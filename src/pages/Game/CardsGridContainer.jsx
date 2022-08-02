@@ -13,7 +13,7 @@ export const CardsGridContainer = styled.div`
     gap: 1rem;
     margin: 0 auto;
     width: 100%;
-    height: 90%;
+    height: 85%;
     max-width: 720px;
   
     @media (max-width: 576px) {

@@ -12,6 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import css from "./styles.module.scss";
 import {PlayerContext} from "src/playerContext";
 import {useNavigate} from "react-router-dom";
+import dayjs from "dayjs";
 
 
 export const ModalResult = ({showModal, onRestart, onClose}) => {
@@ -61,10 +62,10 @@ export const ModalResult = ({showModal, onRestart, onClose}) => {
                     Moves: {playerContext.moves}
                 </Typography>
                 <Typography variant="h5" gutterBottom>
-                    Score: {playerContext.moves}
+                    Score: {playerContext.score}
                 </Typography>
             </DialogContent>
-            <DialogActions sx={{justifyContent: "center", p: 1}}>
+            <DialogActions sx={{justifyContent: "space-between", pr: 3, pl: 3}}>
                 <Button autoFocus onClick={innerOnClose}>
                     Play again
                 </Button>

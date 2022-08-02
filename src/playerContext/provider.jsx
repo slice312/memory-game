@@ -18,6 +18,7 @@ export const PlayerProvider = ({children}) => {
     const [gameMode, setGameMode] = React.useState(0);
 
     const [moves, setMoves] = React.useState(0);
+    const [score, setScore] = React.useState(0);
 
 
     const [startTime, setStartTime] = React.useState(0);
@@ -40,6 +41,8 @@ export const PlayerProvider = ({children}) => {
         const sec = Math.round(dayjs.duration(elapsedTime).asSeconds());
 
         const score = sec * moves;
+
+        setScore(score);
 
         const result = {
             name,
@@ -95,6 +98,7 @@ export const PlayerProvider = ({children}) => {
         startGame,
         stopGame,
         resetGame,
+        score,
         isActive
     };
 

@@ -8,24 +8,30 @@
     height: 100%;
 
     footer {
-        width: 360px;
         position: relative;
         margin: 0 auto;
-        padding: 10px 4px;
-        margin-top: 10px;
 
         .score {
-            justify-content: center;
             display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 35px;
 
             div {
-                padding: 8px
+                padding: 5px
+            }
+
+            .stopwatch {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
             }
         }
 
         .restart {
             display: flex;
-            justify-content: center
+            justify-content: center;
+            gap: 25px;
         }
     }
 

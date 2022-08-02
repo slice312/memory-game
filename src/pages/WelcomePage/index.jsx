@@ -7,9 +7,9 @@ import {
     MenuItem,
     Button,
     TextField,
-    FormHelperText
+    FormHelperText,
 } from "@mui/material";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, Link} from "react-router-dom";
 import {useForm, Controller} from "react-hook-form";
 import {GameMode} from "src/shared/constants";
 import {PlayerContext} from "src/playerContext";
@@ -31,7 +31,7 @@ export const WelcomePage = () => {
         if (data.name && data.gameMode) {
             playerContext.setName(data.name);
             playerContext.setGameMode(data.gameMode);
-            navigate("/game", {state: {name: data.name, mode: data.gameMode}});
+            navigate("/game");
         }
     };
 
@@ -91,9 +91,9 @@ export const WelcomePage = () => {
                     <Button variant="contained" type="submit">
                         Play
                     </Button>
-                    <Link variant="contained" type="submit" >
-                        Play
-                    </Link>
+                    <Button component={Link} to="/leaderboard" variant="contained" color="primary">
+                        Leaderboard
+                    </Button>
                 </form>
             </div>
         </div>

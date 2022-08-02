@@ -4,9 +4,8 @@ import {Card} from "../../App/Card";
 import _ from "lodash";
 import React from "react";
 import "./styles.scss";
+import {Link, Navigate} from "react-router-dom";
 import {GameMode} from "src/shared/constants";
-import {useLocation} from "react-router-dom";
-import {value} from "lodash/seq";
 
 import {PlayerContext} from "src/playerContext";
 import {CardsGridContainer} from "./CardsGridContainer";
@@ -16,11 +15,11 @@ import {Stopwatch} from "./Stopwatch";
 
 
 export const Game = () => {
-    const location = useLocation();
-
     const playerContext = React.useContext(PlayerContext);
+    if (!playerContext.name || !playerContext.gameMode)
+        return <Navigate to="/"/>;
 
-    const [cards, setCards] = React.useState(() => getCards(location.state.mode));
+    const [cards, setCards] = React.useState(() => getCards(playerContext.gameMode));
 
     const [openedCardIds, setOpenedCardIds] = React.useState([]);
     const [clearedCards, setClearedCards] = React.useState([]);
@@ -81,7 +80,7 @@ export const Game = () => {
         setClearedCards([]);
         setOpenedCardIds([]);
         setShowModal(false);
-        setCards(() => getCards(location.state.mode));
+        setCards(() => getCards(playerContext.gameMode));
         playerContext.resetGame();
         stopwatchRef.current.stop();
         stopwatchRef.current.reset();
@@ -90,17 +89,17 @@ export const Game = () => {
     let rows = 4;
     let columns = 4;
 
-    if (location.state.mode === GameMode.Mode3x4) {
+    if (playerContext.gameMode === GameMode.Mode3x4) {
         rows = 3;
         columns = 4;
     }
 
-    if (location.state.mode === GameMode.Mode5x6) {
+    if (playerContext.gameMode === GameMode.Mode5x6) {
         rows = 5;
         columns = 6;
     }
 
-    if (location.state.mode === GameMode.Mode6x6) {
+    if (playerContext.gameMode === GameMode.Mode6x6) {
         rows = 6;
         columns = 6;
     }
@@ -128,11 +127,15 @@ export const Game = () => {
                     <div className="moves">
                         <span className="bold">Moves:</span> {playerContext.moves}
                     </div>
-                    <div>
+                    <div className="stopwatch">
+                        <span className="bold">Time:</span>
                         <Stopwatch ref={stopwatchRef}/>
                     </div>
                 </div>
                 <div className="restart">
+                    <Button component={Link} to="/" variant="contained" color="primary">
+                        Back
+                    </Button>
                     <Button onClick={handleRestart} color="primary" variant="contained">
                         Restart
                     </Button>
@@ -182,7 +185,7 @@ const getCards = (mode) => {
     }
 
     return _.chain(cards)
-        // .shuffle() // TODO: вернуть
+        .shuffle() // TODO: вернуть
         .map((card, i) => ({id: i, ...card}))
         .value();
 };
