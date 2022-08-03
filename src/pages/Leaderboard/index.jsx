@@ -6,7 +6,7 @@ import lstore from "store";
 import cn from "classnames";
 
 import {GameMode} from "src/shared/constants";
-import "./styles.scss";
+import css from "./styles.module.scss";
 
 
 export const Leaderboard = () => {
@@ -19,13 +19,13 @@ export const Leaderboard = () => {
 
 
     return (
-        <div className="leaderboard">
-            <div className="leaderboard__container">
-                <div className="leaderboard__logo">
-                    <p>Leaderboards</p>
+        <div className={css.leaderboard}>
+            <div className={css.container}>
+                <div className={css.title}>
+                    <p>Leaderboard</p>
                 </div>
-                <div className="leaderboard__info">
-                    <div className="info__header">
+                <div className={css.info}>
+                    <div className={css.infoHeader}>
                         <Button component={Link} to="/" variant="contained" color="primary">
                             Home
                         </Button>
@@ -33,9 +33,9 @@ export const Leaderboard = () => {
                             Play Game
                         </Button>
                     </div>
-                    <div className="gradient-line"></div>
+                    <div className={css.gradientLine}></div>
 
-                    <div className="dropdown_block">
+                    <div className={css.dropdownBlock}>
                         <FormControl>
                             <InputLabel id="game-mode-label">
                                 Game Mode
@@ -54,14 +54,14 @@ export const Leaderboard = () => {
                             </Select>
                         </FormControl>
                     </div>
-                    <div className="info__footer">
-                        <div className={cn("info__user", "black_mode")}>
-                            <div className="user__number">
+                    <div className={css.infoFooter}>
+                        <div className={cn(css.infoUser, css.blackMode)}>
+                            <div className={css.userNumber}>
                                 <p>#</p>
                             </div>
-                            <div className="user__name">
-                                <div className="user__name-one">
-                                    <p className="name">Name</p>
+                            <div className={css.userName}>
+                                <div className={css.user__name_one}>
+                                    <p>Name</p>
                                 </div>
                                 <p>Score</p>
                                 <p>Time</p>
@@ -78,16 +78,16 @@ export const Leaderboard = () => {
 
                                 const isCurrentUser = x.name === currentUser?.name;
                                 return (
-                                    <div className={cn("info__user", {
-                                        ["black_mode"]: !isCurrentUser,
-                                        ["red_mode"]: isCurrentUser
+                                    <div className={cn(css.infoUser, {
+                                        [css.blackMode]: !isCurrentUser,
+                                        [css.redMode]: isCurrentUser
                                     })} key={i}>
-                                        <div className="user__number">
+                                        <div className={css.userNumber}>
                                             <p>{i + 1}</p>
                                         </div>
-                                        <div className="user__name">
-                                            <div className="user__name-one">
-                                                <p className="name">{x.name}</p>
+                                        <div className={css.userName}>
+                                            <div className={css.user__name_one}>
+                                                <p>{x.name}</p>
                                             </div>
                                             <p>{x.score}</p>
                                             <p>{timeStr}</p>

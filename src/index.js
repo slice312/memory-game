@@ -10,10 +10,8 @@ import duration from 'dayjs/plugin/duration';
 import dayjs from "dayjs";
 dayjs.extend(duration)
 
-import "./styles/null.scss";
 
 
-console.log("PAGE LOADING");
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

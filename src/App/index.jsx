@@ -1,10 +1,13 @@
 import React from "react";
+
 import {Game} from "src/pages/Game";
 import {PlayerProvider} from "src/playerContext/provider";
 import {Route, Routes, Navigate} from "react-router-dom";
 import {WelcomePage} from "src/pages/WelcomePage";
 import {Leaderboard} from "src/pages/Leaderboard";
 import {withAuthRoute} from "./providers/withAuthRoute";
+import "./styles/null.scss";
+
 
 
 const PrivateGamePage = withAuthRoute(Game);
