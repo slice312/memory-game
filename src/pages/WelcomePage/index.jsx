@@ -12,16 +12,15 @@ import {
 import {useNavigate, Link} from "react-router-dom";
 import {useForm, Controller} from "react-hook-form";
 import {GameMode} from "src/shared/constants";
-import {PlayerContext} from "src/playerContext";
-
+import lstore from "store";
 
 
 export const WelcomePage = () => {
-    const playerContext = React.useContext(PlayerContext);
 
     React.useEffect(() => {
-        setValue("name", playerContext.name);
-    }, [playerContext.name])
+        const user = lstore.get("user");
+        user && setValue("name", user.name);
+    }, []);
 
     const navigate = useNavigate();
 
@@ -29,7 +28,7 @@ export const WelcomePage = () => {
 
     const onFormSubmit = (data) => {
         if (data.name && data.gameMode) {
-            playerContext.setName(data.name);
+            lstore.set("user", {name: data.name})
             navigate(`/game/${data.gameMode}`);
         }
     };
@@ -45,7 +44,7 @@ export const WelcomePage = () => {
                         name="name"
                         control={control}
                         rules={{required: "Name required"}}
-                        defaultValue={playerContext.name}
+                        defaultValue=""
                         render={({field, fieldState}) => (
                             <TextField
                                 name="name"

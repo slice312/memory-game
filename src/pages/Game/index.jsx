@@ -1,39 +1,30 @@
-import {ModalResult} from "../../App/ModalResult";
-import {Card} from "../../App/Card";
 import React from "react";
-import "./styles.scss";
-import {Link, Navigate, useParams} from "react-router-dom";
-import {GameMode} from "src/shared/constants";
+import {Link, useParams} from "react-router-dom";
+import {Button} from "@mui/material";
 
 import {PlayerContext} from "src/playerContext";
-import {CardsGridContainer} from "./CardsGridContainer";
-import {Button} from "@mui/material";2
-
-import {Stopwatch} from "./Stopwatch";
+import {Card} from "src/entities/Card";
+import {ModalResult} from "src/widgets/ModalResult";
+import {Stopwatch} from "src/shared/ui/Stopwatch";
 import {gameModel, getCards, GameAction} from "./model";
-
+import {CardsGridContainer} from "./ui/CardsGridContainer";
+import css from "./styles.module.scss";
 
 
 export const Game = () => {
-
-    console.log("Game");
+    const {gameMode} = useParams();
     const playerContext = React.useContext(PlayerContext);
     const [state, dispatch] = React.useReducer(gameModel.reducer, gameModel.initialState);
-    const {gameMode} = useParams();
+
     React.useEffect(() => {
-        dispatch({type: GameAction.SetCards, payload: getCards(gameMode)});
+        dispatch({type: GameAction.SetCards, payload: {cards: getCards(gameMode)}});
     }, [gameMode]);
 
 
     const [showModal, setShowModal] = React.useState(false);
 
-
     const stopwatchRef = React.useRef();
-
-
     const timeoutHandlerId = React.useRef(null);
-
-
     const refIsDisabledCards = React.useRef(false);
 
 
@@ -76,50 +67,31 @@ export const Game = () => {
             clearTimeout(timeoutHandlerId.current);
     };
 
+
+    React.useEffect(() => {
+        checkCompletion();
+    }, [state.clearedCardIds]);
+
     const checkCompletion = () => {
-        if (state.cards.length && Object.keys(state.clearedCardIds).length === state.cards.length) {
+        if (state.cards.length && state.clearedCardIds.length === state.cards.length) {
             playerContext.stopGame();
             stopwatchRef.current.stop();
             setShowModal(true);
         }
     };
 
-
-    React.useEffect(() => {
-        checkCompletion();
-    }, [state.clearedCardIds]);
-
-
     const handleRestart = () => {
         dispatch({type: GameAction.Reset});
-        dispatch({type: GameAction.SetCards(), payload: getCards(gameMode)});
+        dispatch({type: GameAction.SetCards, payload: {cards: getCards(gameMode)}});
         setShowModal(false);
         playerContext.resetGame();
         stopwatchRef.current.stop();
         stopwatchRef.current.reset();
     };
 
-    let rows = 4;
-    let columns = 4;
-
-    if (gameMode === GameMode.Mode3x4) {
-        rows = 3;
-        columns = 4;
-    }
-
-    if (gameMode === GameMode.Mode5x6) {
-        rows = 5;
-        columns = 6;
-    }
-
-    if (gameMode === GameMode.Mode6x6) {
-        rows = 6;
-        columns = 6;
-    }
-
     return (
-        <div className="App">
-            <CardsGridContainer rows={rows} columns={columns}>
+        <div className={css.root}>
+            <CardsGridContainer gameMode={gameMode}>
                 {
                     state.cards.map((card, i) => {
                         return (
@@ -135,25 +107,23 @@ export const Game = () => {
                 }
             </CardsGridContainer>
 
-            <footer>
-                <div className="score">
-                    <div className="moves">
-                        <span className="bold">Moves:</span> {playerContext.moves}
-                    </div>
-                    <div className="stopwatch">
-                        <span className="bold">Time:</span>
-                        <Stopwatch ref={stopwatchRef}/>
-                    </div>
+            <div className={css.score}>
+                <div className="moves">
+                    <span className={css.bold}>Moves:</span> {playerContext.moves}
                 </div>
-                <div className="restart">
-                    <Button component={Link} to="/" variant="contained" color="primary">
-                        Back
-                    </Button>
-                    <Button onClick={handleRestart} color="primary" variant="contained">
-                        Restart
-                    </Button>
+                <div className={css.stopwatch}>
+                    <span className={css.bold}>Time:</span>
+                    <Stopwatch ref={stopwatchRef}/>
                 </div>
-            </footer>
+            </div>
+            <div className={css.restart}>
+                <Button component={Link} to="/" variant="contained" color="primary">
+                    Back
+                </Button>
+                <Button onClick={handleRestart} color="primary" variant="contained">
+                    Restart
+                </Button>
+            </div>
 
             <ModalResult
                 showModal={showModal}
@@ -163,5 +133,3 @@ export const Game = () => {
         </div>
     );
 };
-
-

@@ -3,35 +3,26 @@ import {PlayerContext} from "./index";
 import store from "store";
 import _ from "lodash";
 import dayjs from "dayjs";
+import lstore from "store";
+
+
 
 export const PlayerProvider = ({children}) => {
     React.useEffect(() => {
-        console.log("FIRST INIT PROVIDER");
-        const user = store.get("user");
-        if (user)
-            setName(user.name);
     }, []);
 
 
-    const [name, setName] = React.useState("");
-
     const [moves, setMoves] = React.useState(0);
     const [score, setScore] = React.useState(0);
-
-
     const [startTime, setStartTime] = React.useState(0);
     const [isActive, setIsActive] = React.useState(false);
 
 
-    React.useEffect(() => {
-        console.log("ASVED");
-        if (name)
-            store.set("user", {name});
-    }, [name]);
 
 
     const saveResult = () => {
-        if (!name)
+        const user = lstore.get("user");
+        if (!user)
             return;
 
         const elapsedTime = Date.now() - startTime;
@@ -43,7 +34,7 @@ export const PlayerProvider = ({children}) => {
         setScore(score);
 
         const result = {
-            name,
+            name: user.name,
             // gameMode, // TODO: проблема
             moves,
             elapsedTime,
@@ -53,7 +44,7 @@ export const PlayerProvider = ({children}) => {
 
         const leaderboard = store.get("leaderboard");
         if (leaderboard) {
-            const existedRecIndex = leaderboard.findIndex(x => x.name === name);
+            const existedRecIndex = leaderboard.findIndex(x => x.name === user.name);
             if (existedRecIndex !== -1) {
                 const existedRec = leaderboard[existedRecIndex];
                 if (existedRec.score >= result.score) {
@@ -88,8 +79,6 @@ export const PlayerProvider = ({children}) => {
     const addMove = () => setMoves(prev => prev + 1);
 
     const value = {
-        name,
-        setName,
         moves,
         addMove,
         startGame,
