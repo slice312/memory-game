@@ -1,21 +1,17 @@
 import React from "react";
-import {PlayerContext} from "./index";
 import dayjs from "dayjs";
 import lstore from "store";
 
+import {PlayerContext} from "./index";
+
 
 export const PlayerProvider = ({children}) => {
-    React.useEffect(() => {
-    }, []);
-
-
     const [gameMode, setGameMode] = React.useState();
     const [moves, setMoves] = React.useState(0);
     const [score, setScore] = React.useState(0);
     const [startTime, setStartTime] = React.useState(0);
     const [isActive, setIsActive] = React.useState(false);
     const [elapsedTime, setElapsedTime] = React.useState(0);
-
 
 
     const saveResult = () => {
@@ -27,19 +23,16 @@ export const PlayerProvider = ({children}) => {
         setElapsedTime(dif);
 
         const sec = Math.round(dayjs.duration(dif).asSeconds());
-
         const score = sec * moves;
-
         setScore(score);
 
         const result = {
             name: user.name,
-            gameMode, // TODO: проблема
+            gameMode,
             moves,
             elapsedTime: dif,
             score
         };
-
 
         const leaderboard = lstore.get("leaderboard");
         if (leaderboard) {
@@ -52,10 +45,8 @@ export const PlayerProvider = ({children}) => {
             } else
                 leaderboard.push(result);
             lstore.set("leaderboard", leaderboard);
-
-        } else {
+        } else
             lstore.set("leaderboard", [result]);
-        }
     };
 
 

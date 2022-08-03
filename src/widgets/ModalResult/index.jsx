@@ -63,10 +63,10 @@ export const ModalResult = ({showModal, onRestart, onClose}) => {
             <DialogContent dividers sx={{
                 padding: matches
                     ? "30px 80px 30px 100px"
-                    :"30px 10px 30px 30px"
+                    : "30px 10px 30px 30px"
             }}>
                 <Typography variant="h5" gutterBottom>
-                     &nbsp;&nbsp;&nbsp;Time: {timeStr}
+                    &nbsp;&nbsp;&nbsp;Time: {timeStr}
                 </Typography>
                 <Typography variant="h5" gutterBottom>
                     Moves: {playerContext.moves}
@@ -75,7 +75,8 @@ export const ModalResult = ({showModal, onRestart, onClose}) => {
                     &nbsp;Score: {playerContext.score}
                 </Typography>
             </DialogContent>
-            <DialogActions sx={{
+            <DialogActions
+                sx={{
                     justifyContent: "space-between",
                     gap: "15px",
                     padding: "15px 25px",
