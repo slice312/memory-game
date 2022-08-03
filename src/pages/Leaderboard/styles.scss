@@ -11,8 +11,6 @@
         right: 0;
         left: 0;
         bottom: 0;
-        //background-color: red;
-        background-color: #1976d2;
         background-color: #1976d2;
         transform: translateY(-50%);
     }
@@ -24,7 +22,6 @@
         right: 0;
         left: 0;
         bottom: 0;
-        background-color: rgb(0, 0, 0);
         background-color: rgb(0, 0, 0);
         transform: translateY(50%);
     }
@@ -67,32 +64,20 @@
             }
 
 
-            .loader {
+            .gradient-line {
                 position: relative;
                 width: 100%;
                 height: 5px;
                 background-color: white;
-                -webkit-box-reflect: below 1px liner-gradient(transparen, #0005);
                 margin: 20px 0;
             }
 
-            .loader::before {
+            .gradient-line::before {
                 content: "";
                 position: absolute;
                 inset: 0;
                 background: linear-gradient(90deg, #1b36f1, rgb(255, 255, 255), rgb(0, 0, 0), rgb(3, 11, 117), red);
-                animation: animate 20s linear infinite;
                 background-size: 500%;
-            }
-
-            @keyframes animate {
-                0% {
-                    background-position: 0 0;
-                }
-
-                100% {
-                    background-position: 500% 0;
-                }
             }
 
 
@@ -104,66 +89,6 @@
                 justify-content: flex-end;
                 margin-bottom: 20px;
                 gap: 20px;
-
-
-            .dropdown {
-                width: 180px;
-                border-radius: 10px;
-                background-color: white;
-                box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
-            }
-
-                .dropdown-header {
-                    padding: 10px;
-                    cursor: pointer;
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                }
-
-                .dropdown-body {
-                    border-top: 1px solid #E5E8EC;
-                    display: none;
-                }
-
-                .dropdown-body.open {
-                    display: block;
-                    margin-top: 10px;
-                    position: relative;
-                    z-index: 25;
-                    border-radius: 10px;
-                    box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
-                    background-color: white;
-                }
-
-                .dropdown-item {
-                    padding: 10px;
-                }
-
-                .dropdown-item:hover {
-                    cursor: pointer;
-                }
-
-                .dropdown-item-dot {
-                    opacity: 0;
-                    color: #91A5BE;
-                    transition: all .2s ease-in-out;
-                }
-
-                .dropdown-item-dot.selected {
-                    opacity: 1;
-                }
-
-                .icon {
-                    font-size: 25px;
-                    color: #91A5BE;
-                    transform: rotate(0deg);
-                    transition: all .2s ease-in-out;
-                }
-
-                .icon.open {
-                    transform: rotate(180deg);
-                }
             }
 
             .info__footer {
@@ -203,10 +128,11 @@
                     }
 
                     .user__name {
+                        display: grid;
+                        grid-template-columns: 3fr 1fr 1fr 1fr;
                         width: calc(100% - 80px);
                         height: 100%;
                         margin-left: 20px;
-                        display: flex;
                         justify-content: space-between;
                         padding: 10px;
                         box-shadow: rgba(136, 165, 191, 0.48) 6px 2px 16px 0px, rgba(255, 255, 255, 0.8) -6px -2px 16px 0px;
@@ -224,20 +150,6 @@
                             }
 
 
-                        p {
-                            font-family: 'Poppins', sans-serif;
-                            text-transform: uppercase;
-                            font-size: 1.1rem;
-                            font-weight: 600;
-                        }
-                        }
-
-                        .user__name-two {
-                            display: flex;
-                            align-items: center;
-                            gap: 20px;
-                            flex-wrap: nowrap;
-
                             p {
                                 font-family: 'Poppins', sans-serif;
                                 text-transform: uppercase;
@@ -245,23 +157,37 @@
                                 font-weight: 600;
                             }
                         }
+
+                        p {
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            font-family: 'Poppins', sans-serif;
+                            text-transform: uppercase;
+                            font-size: 1.1rem;
+                            font-weight: 600;
+                        }
                     }
                 }
 
                 .red_mode {
                     .user__number {
-                        box-shadow: rgba(0, 81, 255, 0.4) 0px 3px 3px 0px;                    }
+                        box-shadow: rgba(0, 81, 255, 0.4) 0px 3px 3px 0px;
+                    }
 
                     .user__name {
-                        box-shadow: rgba(0, 81, 255, 0.4) 0px 3px 3px 0px;                    }
+                        box-shadow: rgba(0, 81, 255, 0.4) 0px 3px 3px 0px;
+                    }
                 }
 
                 .black_mode {
                     .user__number {
-                        box-shadow: rgba(0, 0, 0, 0.4) 0px 3px 3px 0px;                    }
+                        box-shadow: rgba(0, 0, 0, 0.4) 0px 3px 3px 0px;
+                    }
 
                     .user__name {
-                        box-shadow: rgba(0, 0, 0, 0.4) 0px 3px 3px 0px;                    }
+                        box-shadow: rgba(0, 0, 0, 0.4) 0px 3px 3px 0px;
+                    }
                 }
 
                 .info__empty {
@@ -286,9 +212,14 @@
     }
 }
 
-@media (max-width:600px) {
+@media (max-width: 600px) {
     .leaderboard {
         .leaderboard__container {
+            .leaderboard__logo {
+                p {
+                    font-size: 1.5rem;
+                }
+            }
             .leaderboard__info {
                 .info__header {
                     height: 40px;
@@ -323,7 +254,7 @@
                             height: 40px;
 
                             p {
-                                font-size: 1.2rem;
+                                font-size: 0.75rem;
                             }
                         }
 
@@ -342,17 +273,13 @@
                                 }
 
                                 p {
-                                    font-size: 1rem;
+                                    font-size: 0.75rem;
                                 }
                             }
 
-                            .user__name-two {
-                                gap: 10px;
-
-                                p {
-                                    font-size: 1rem;
-                                    text-align: center;
-                                }
+                            p {
+                                font-size: 0.75rem;
+                                text-align: center;
                             }
                         }
                     }
@@ -418,13 +345,13 @@
                         align-items: center;
                         box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
 
-                    p {
-                        color: white;
-                        font-family: 'Poppins', sans-serif;
-                        text-transform: uppercase;
-                        font-size: 1.1rem;
-                        font-weight: 600;
-                    }
+                        p {
+                            color: white;
+                            font-family: 'Poppins', sans-serif;
+                            text-transform: uppercase;
+                            font-size: 1.1rem;
+                            font-weight: 600;
+                        }
                     }
                 }
             }

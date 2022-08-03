@@ -1,50 +1,22 @@
-import React, {useState} from "react";
+import React from "react";
 import {Link} from "react-router-dom";
-import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
-import "./styles.scss";
-import store from "store";
+import {Button, FormControl, InputLabel, MenuItem, Select} from "@mui/material";
 import dayjs from "dayjs";
+import lstore from "store";
 import cn from "classnames";
-import {PlayerContext} from "../../playerContext";
-import {Button} from "@mui/material";
 
-
-const data = [
-    {id: 0, label: "timeSpan"},
-    {id: 1, label: "score"},
-    {id: 2, label: "moves"},
-];
-
-const mode = [
-    {id: 0, label: "5x4"},
-    {id: 1, label: "4x4"},
-    {id: 2, label: "4x3"},
-];
+import {GameMode} from "src/shared/constants";
+import "./styles.scss";
 
 
 export const Leaderboard = () => {
-    const playerContext = React.useContext(PlayerContext);
+    const currentUser = lstore.get("user");
 
-    const [isOpen, setOpen] = useState(false);
-    const [items, setItem] = useState(data);
-    const [selectedItem, setSelectedItem] = useState(null);
-    const toggleDropdown = () => setOpen(!isOpen);
-    const handleItemClick = (id) => {
-        selectedItem == id ? setSelectedItem(null) : setSelectedItem(id);
-        setOpen(!isOpen);
-    };
+    const [gameMode, setGameMode] = React.useState(GameMode.Mode3x4);
 
-    const [isOpens, setOpens] = useState(false);
-    const [itemss, setItems] = useState(mode);
-    const [selectedItems, setSelectedItems] = useState(null);
-    const toggleDropdowns = () => setOpens(!isOpens);
-    const handleItemClicks = (id) => {
-        selectedItems == id ? setSelectedItems(null) : setSelectedItems(id);
-        setOpens(!isOpens);
-    };
+    const leaderboard = (lstore.get("leaderboard") || [])
+        .filter(x => x.gameMode === gameMode);
 
-
-    const leaderboard = store.get("leaderboard") || [];
 
     return (
         <div className="leaderboard">
@@ -61,36 +33,41 @@ export const Leaderboard = () => {
                             Play Game
                         </Button>
                     </div>
-                    <div className="loader"></div>
-                    {/*TODO: вернуть*/}
-                    {/*<div className="dropdown_block">*/}
-                    {/*    <div className="dropdown">*/}
-                    {/*        <div className="dropdown-header" onClick={toggleDropdowns}>*/}
-                    {/*            {selectedItems*/}
-                    {/*                ? itemss.find((item) => item.id == selectedItems).label*/}
-                    {/*                : "Game mode"}*/}
-                    {/*            <ArrowDropUpIcon className={`icon ${isOpens && "open"}`}/>*/}
-                    {/*        </div>*/}
-                    {/*        <div className={`dropdown-body ${isOpens && "open"}`}>*/}
-                    {/*            {itemss.map((item, i) => (*/}
-                    {/*                <div*/}
-                    {/*                    key={i}*/}
-                    {/*                    className="dropdown-item"*/}
-                    {/*                    onClick={(e) => handleItemClicks(e.target.id)}*/}
-                    {/*                    id={item.id}*/}
-                    {/*                >*/}
-                    {/*<span*/}
-                    {/*    className={`dropdown-item-dot ${*/}
-                    {/*        item.id == selectedItems && "selected"*/}
-                    {/*    }`}*/}
-                    {/*></span>*/}
-                    {/*                    {item.label}*/}
-                    {/*                </div>*/}
-                    {/*            ))}*/}
-                    {/*        </div>*/}
-                    {/*    </div>*/}
-                    {/*</div>*/}
+                    <div className="gradient-line"></div>
+
+                    <div className="dropdown_block">
+                        <FormControl>
+                            <InputLabel id="game-mode-label">
+                                Game Mode
+                            </InputLabel>
+                            <Select
+                                sx={{width: 150}}
+                                labelId="game-mode-label"
+                                value={gameMode}
+                                label="Game mode"
+                                onChange={e => setGameMode(e.target.value)}
+                            >
+                                <MenuItem value={GameMode.Mode3x4}>3 x 4</MenuItem>
+                                <MenuItem value={GameMode.Mode4x4}>4 x 4</MenuItem>
+                                <MenuItem value={GameMode.Mode5x6}>5 x 6</MenuItem>
+                                <MenuItem value={GameMode.Mode6x6}>6 x 6</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </div>
                     <div className="info__footer">
+                        <div className={cn("info__user", "black_mode")}>
+                            <div className="user__number">
+                                <p>#</p>
+                            </div>
+                            <div className="user__name">
+                                <div className="user__name-one">
+                                    <p className="name">Name</p>
+                                </div>
+                                <p>Score</p>
+                                <p>Time</p>
+                                <p>Moves</p>
+                            </div>
+                        </div>
                         {
                             leaderboard.map((x, i) => {
                                 const duration = dayjs.duration(x.elapsedTime);
@@ -99,7 +76,7 @@ export const Leaderboard = () => {
                                     minutes: duration.minutes()
                                 }).format("mm:ss");
 
-                                const isCurrentUser = x.name === playerContext.name;
+                                const isCurrentUser = x.name === currentUser?.name;
                                 return (
                                     <div className={cn("info__user", {
                                         ["black_mode"]: !isCurrentUser,
@@ -110,14 +87,11 @@ export const Leaderboard = () => {
                                         </div>
                                         <div className="user__name">
                                             <div className="user__name-one">
-                                                {/*<img src={img} alt=""/>*/}
                                                 <p className="name">{x.name}</p>
                                             </div>
-                                            <div className="user__name-two">
-                                                <p>score: {x.score}</p>
-                                                <p>time: {timeStr}</p>
-                                                <p>moves: {x.moves}</p>
-                                            </div>
+                                            <p>{x.score}</p>
+                                            <p>{timeStr}</p>
+                                            <p>{x.moves}</p>
                                         </div>
                                     </div>
                                 );
@@ -129,4 +103,3 @@ export const Leaderboard = () => {
         </div>
     );
 };
-

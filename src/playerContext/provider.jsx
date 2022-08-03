@@ -6,12 +6,12 @@ import dayjs from "dayjs";
 import lstore from "store";
 
 
-
 export const PlayerProvider = ({children}) => {
     React.useEffect(() => {
     }, []);
 
 
+    const [gameMode, setGameMode] = React.useState();
     const [moves, setMoves] = React.useState(0);
     const [score, setScore] = React.useState(0);
     const [startTime, setStartTime] = React.useState(0);
@@ -20,7 +20,7 @@ export const PlayerProvider = ({children}) => {
 
 
 
-    const saveResult = (gameMode) => {
+    const saveResult = () => {
         const user = lstore.get("user");
         if (!user)
             return;
@@ -36,7 +36,7 @@ export const PlayerProvider = ({children}) => {
 
         const result = {
             name: user.name,
-            // gameMode, // TODO: проблема
+            gameMode, // TODO: проблема
             moves,
             elapsedTime: dif,
             score
@@ -45,7 +45,7 @@ export const PlayerProvider = ({children}) => {
 
         const leaderboard = store.get("leaderboard");
         if (leaderboard) {
-            const existedRecIndex = leaderboard.findIndex(x => x.name === user.name);
+            const existedRecIndex = leaderboard.findIndex(x => x.name === user.name && x.gameMode === gameMode);
             if (existedRecIndex !== -1) {
                 const existedRec = leaderboard[existedRecIndex];
                 if (existedRec.score >= result.score) {
@@ -61,7 +61,8 @@ export const PlayerProvider = ({children}) => {
     };
 
 
-    const startGame = () => {
+    const startGame = (gameMode) => {
+        setGameMode(gameMode);
         setMoves(0);
         setStartTime(Date.now());
         setIsActive(true);

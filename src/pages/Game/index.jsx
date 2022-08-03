@@ -55,7 +55,7 @@ export const Game = () => {
             return;
 
         if (!playerContext.isActive) {
-            playerContext.startGame();
+            playerContext.startGame(gameMode);
             stopwatchRef.current.start();
         }
 
