@@ -1,42 +1,48 @@
 import deepFreeze from "deep-freeze";
 
+import NodejsLogo from "src/assets/images/nodejs.png";
+import CssLogo from "src/assets/images/css.png";
+import HtmlLogo from "src/assets/images/html.png";
+import JqueryLogo from "src/assets/images/jquery.png";
+import JsLogo from "src/assets/images/js.png";
+import MongoDbLogo from "src/assets/images/mongodb.png";
 import DockerLogo from "src/assets/images/docker.png";
-import NestLogo from "src/assets/images/nest.svg";
+import NestjsLogo from "src/assets/images/nest.svg";
 import AngularLogo from "src/assets/images/angular.png";
 
 
 export const cardsData = deepFreeze([
     {
-        type: "Pikachu",
-        image: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/74196/php-logo_1.png"
+        type: "Nodejs",
+        image: NodejsLogo
     },
     {
-        type: "ButterFree",
-        image: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/74196/css3-logo.png"
+        type: "Css",
+        image: CssLogo
     },
     {
-        type: "Charmander",
-        image: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/74196/html5-logo.png"
+        type: "Html",
+        image: HtmlLogo
     },
     {
-        type: "Squirtle",
-        image: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/74196/jquery-logo.png"
+        type: "Jquery",
+        image: JqueryLogo
     },
     {
-        type: "Pidgetto",
-        image: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/74196/js-logo.png"
+        type: "Js",
+        image: JsLogo
     },
     {
-        type: "Bulbasaur",
-        image: "https://s3-us-west-2.amazonaws.com/s.cdpn.io/74196/nodejs-logo.png"
+        type: "MongoDb",
+        image: MongoDbLogo
     },
     {
         type: "Docker",
         image: DockerLogo
     },
     {
-        type: "Nest",
-        image: NestLogo
+        type: "Nestjs",
+        image: NestjsLogo
     },
     {
         type: "Angular",

@@ -6,7 +6,8 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
-    Typography
+    Typography,
+    useMediaQuery
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
@@ -35,6 +36,10 @@ export const ModalResult = ({showModal, onRestart, onClose}) => {
     }).format("mm:ss");
 
 
+    const matches = useMediaQuery("(min-width:400px)");
+    console.log("matches '(min-width:600px)'", matches);
+
+
     return (
         <Dialog
             open={showModal}
@@ -55,7 +60,11 @@ export const ModalResult = ({showModal, onRestart, onClose}) => {
                     <CloseIcon/>
                 </IconButton>
             </DialogTitle>
-            <DialogContent dividers sx={{padding: "30px 80px 30px 100px"}}>
+            <DialogContent dividers sx={{
+                padding: matches
+                    ? "30px 80px 30px 100px"
+                    :"30px 10px 30px 30px"
+            }}>
                 <Typography variant="h5" gutterBottom>
                      &nbsp;&nbsp;&nbsp;Time: {timeStr}
                 </Typography>
@@ -66,11 +75,16 @@ export const ModalResult = ({showModal, onRestart, onClose}) => {
                     &nbsp;Score: {playerContext.score}
                 </Typography>
             </DialogContent>
-            <DialogActions sx={{justifyContent: "space-between", gap: "15px", padding: "15px 25px"}}>
-                <Button variant="contained" autoFocus onClick={innerOnClose}>
+            <DialogActions sx={{
+                    justifyContent: "space-between",
+                    gap: "15px",
+                    padding: "15px 25px",
+                    flexDirection: matches ? "row" : "column"
+                }}>
+                <Button variant="contained" autoFocus onClick={innerOnClose} sx={{width: 150}}>
                     Play again
                 </Button>
-                <Button variant="contained" onClick={redirectToLeaderboard}>
+                <Button variant="contained" onClick={redirectToLeaderboard} sx={{width: 150}}>
                     Leaderboard
                 </Button>
             </DialogActions>

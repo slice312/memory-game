@@ -41,7 +41,7 @@ export const PlayerProvider = ({children}) => {
         };
 
 
-        const leaderboard = store.get("leaderboard");
+        const leaderboard = lstore.get("leaderboard");
         if (leaderboard) {
             const existedRecIndex = leaderboard.findIndex(x => x.name === user.name && x.gameMode === gameMode);
             if (existedRecIndex !== -1) {
@@ -51,10 +51,10 @@ export const PlayerProvider = ({children}) => {
                 }
             } else
                 leaderboard.push(result);
-            store.set("leaderboard", leaderboard);
+            lstore.set("leaderboard", leaderboard);
 
         } else {
-            store.set("leaderboard", [result]);
+            lstore.set("leaderboard", [result]);
         }
     };
 
