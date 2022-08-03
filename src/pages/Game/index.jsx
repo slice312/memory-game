@@ -2,7 +2,7 @@ import React from "react";
 import {Link, useParams} from "react-router-dom";
 import {Button} from "@mui/material";
 
-import {PlayerContext} from "src/features/playerContext";
+import {PlayerContext} from "src/processes/playerContext";
 import {Card} from "src/entities/Card";
 import {ModalResult} from "src/widgets/ModalResult";
 import {Stopwatch} from "src/shared/ui/Stopwatch";

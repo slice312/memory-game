@@ -1,7 +1,7 @@
 import React from "react";
 import {Route, Routes, Navigate} from "react-router-dom";
 
-import {PlayerProvider} from "src/features/playerContext/provider";
+import {PlayerProvider} from "src/processes/playerContext/provider";
 import {WelcomePage} from "src/pages/WelcomePage";
 import {Game} from "src/pages/Game";
 import {Leaderboard} from "src/pages/Leaderboard";

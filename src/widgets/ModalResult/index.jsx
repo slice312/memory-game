@@ -13,7 +13,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
 import dayjs from "dayjs";
 
-import {PlayerContext} from "src/features/playerContext";
+import {PlayerContext} from "src/processes/playerContext";
 
 
 export const ModalResult = ({showModal, onRestart, onClose}) => {

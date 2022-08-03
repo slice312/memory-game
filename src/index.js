@@ -5,7 +5,7 @@ import {BrowserRouter} from "react-router-dom";
 import duration from "dayjs/plugin/duration";
 import dayjs from "dayjs";
 
-import {App} from "./App";
+import {App} from "./app";
 import reportWebVitals from "./reportWebVitals";
 import "./index.css";
 
