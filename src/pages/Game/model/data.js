@@ -36,7 +36,7 @@ export const getCards = (mode) => {
     }
 
     return _.chain(cards)
-        // .shuffle() // TODO: вернуть
+        .shuffle()
         .map((card, i) => ({id: i, ...card}))
         .value();
 };
