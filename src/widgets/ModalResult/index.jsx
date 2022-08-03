@@ -1,18 +1,18 @@
 import React from "react";
+import {useNavigate} from "react-router-dom";
 import {
     Button,
     Dialog,
     DialogActions,
     DialogContent,
-    DialogContentText,
-    DialogTitle, Typography,
+    DialogTitle,
+    Typography,
 } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import IconButton from '@mui/material/IconButton';
-import css from "./styles.module.scss";
-import {PlayerContext} from "src/playerContext";
-import {useNavigate} from "react-router-dom";
 import dayjs from "dayjs";
+
+import {PlayerContext} from "src/playerContext";
 
 
 export const ModalResult = ({showModal, onRestart, onClose}) => {
@@ -23,12 +23,16 @@ export const ModalResult = ({showModal, onRestart, onClose}) => {
         onClose();
     };
 
-
     const navigate = useNavigate();
 
-    const redirectToLeaderboard = () => {
-        navigate("/leaderboard");
-    };
+    const redirectToLeaderboard = () => navigate("/leaderboard");
+
+
+    const duration = dayjs.duration(playerContext.elapsedTime);
+    const timeStr = dayjs.duration({
+        seconds: duration.seconds(),
+        minutes: duration.minutes()
+    }).format("mm:ss");
 
 
     return (
@@ -51,25 +55,22 @@ export const ModalResult = ({showModal, onRestart, onClose}) => {
                     <CloseIcon/>
                 </IconButton>
             </DialogTitle>
-            <DialogContent dividers className={css.content} sx={{padding: "30px 80px 50px 80px"}}>
-                <Typography variant="h4" sx={{mb: 5}}>
-                    Game over!
-                </Typography>
+            <DialogContent dividers sx={{padding: "30px 80px 30px 100px"}}>
                 <Typography variant="h5" gutterBottom>
-                    Time: {2}
+                     &nbsp;&nbsp;&nbsp;Time: {timeStr}
                 </Typography>
                 <Typography variant="h5" gutterBottom>
                     Moves: {playerContext.moves}
                 </Typography>
                 <Typography variant="h5" gutterBottom>
-                    Score: {playerContext.score}
+                    &nbsp;Score: {playerContext.score}
                 </Typography>
             </DialogContent>
-            <DialogActions sx={{justifyContent: "space-between", pr: 3, pl: 3}}>
-                <Button autoFocus onClick={innerOnClose}>
+            <DialogActions sx={{justifyContent: "space-between", gap: "15px", padding: "15px 25px"}}>
+                <Button variant="contained" autoFocus onClick={innerOnClose}>
                     Play again
                 </Button>
-                <Button onClick={redirectToLeaderboard}>
+                <Button variant="contained" onClick={redirectToLeaderboard}>
                     Leaderboard
                 </Button>
             </DialogActions>

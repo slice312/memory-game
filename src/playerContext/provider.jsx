@@ -16,18 +16,19 @@ export const PlayerProvider = ({children}) => {
     const [score, setScore] = React.useState(0);
     const [startTime, setStartTime] = React.useState(0);
     const [isActive, setIsActive] = React.useState(false);
+    const [elapsedTime, setElapsedTime] = React.useState(0);
 
 
 
-
-    const saveResult = () => {
+    const saveResult = (gameMode) => {
         const user = lstore.get("user");
         if (!user)
             return;
 
-        const elapsedTime = Date.now() - startTime;
+        const dif = Date.now() - startTime;
+        setElapsedTime(dif)
 
-        const sec = Math.round(dayjs.duration(elapsedTime).asSeconds());
+        const sec = Math.round(dayjs.duration(dif).asSeconds());
 
         const score = sec * moves;
 
@@ -37,7 +38,7 @@ export const PlayerProvider = ({children}) => {
             name: user.name,
             // gameMode, // TODO: проблема
             moves,
-            elapsedTime,
+            elapsedTime: dif,
             score
         };
 
@@ -85,6 +86,7 @@ export const PlayerProvider = ({children}) => {
         stopGame,
         resetGame,
         score,
+        elapsedTime,
         isActive
     };
 
