@@ -6,13 +6,13 @@ import {
     DialogActions,
     DialogContent,
     DialogTitle,
-    Typography,
+    Typography
 } from "@mui/material";
-import CloseIcon from '@mui/icons-material/Close';
-import IconButton from '@mui/material/IconButton';
+import CloseIcon from "@mui/icons-material/Close";
+import IconButton from "@mui/material/IconButton";
 import dayjs from "dayjs";
 
-import {PlayerContext} from "src/playerContext";
+import {PlayerContext} from "src/features/playerContext";
 
 
 export const ModalResult = ({showModal, onRestart, onClose}) => {
@@ -46,10 +46,10 @@ export const ModalResult = ({showModal, onRestart, onClose}) => {
                     aria-label="close"
                     onClick={innerOnClose}
                     sx={{
-                        position: 'absolute',
+                        position: "absolute",
                         right: 8,
                         top: 8,
-                        color: (theme) => theme.palette.grey[500],
+                        color: (theme) => theme.palette.grey[500]
                     }}
                 >
                     <CloseIcon/>

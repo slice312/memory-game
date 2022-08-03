@@ -1,5 +1,5 @@
 import React from "react";
-import css from "./styles.module.scss";
+import {useNavigate, Link} from "react-router-dom";
 import {
     FormControl,
     InputLabel,
@@ -7,16 +7,16 @@ import {
     MenuItem,
     Button,
     TextField,
-    FormHelperText,
+    FormHelperText
 } from "@mui/material";
-import {useNavigate, Link} from "react-router-dom";
 import {useForm, Controller} from "react-hook-form";
-import {GameMode} from "src/shared/constants";
 import lstore from "store";
+
+import {GameMode} from "src/shared/constants";
+import css from "./styles.module.scss";
 
 
 export const WelcomePage = () => {
-
     React.useEffect(() => {
         const user = lstore.get("user");
         user && setValue("name", user.name);
@@ -28,7 +28,7 @@ export const WelcomePage = () => {
 
     const onFormSubmit = (data) => {
         if (data.name && data.gameMode) {
-            lstore.set("user", {name: data.name})
+            lstore.set("user", {name: data.name});
             navigate(`/game/${data.gameMode}`);
         }
     };

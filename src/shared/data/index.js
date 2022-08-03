@@ -1,7 +1,9 @@
 import deepFreeze from "deep-freeze";
+
 import DockerLogo from "src/assets/images/docker.png";
 import NestLogo from "src/assets/images/nest.svg";
 import AngularLogo from "src/assets/images/angular.png";
+
 
 export const cardsData = deepFreeze([
     {
@@ -39,6 +41,5 @@ export const cardsData = deepFreeze([
     {
         type: "Angular",
         image: AngularLogo
-    },
-
+    }
 ]);

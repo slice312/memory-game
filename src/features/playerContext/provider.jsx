@@ -1,7 +1,5 @@
 import React from "react";
 import {PlayerContext} from "./index";
-import store from "store";
-import _ from "lodash";
 import dayjs from "dayjs";
 import lstore from "store";
 
@@ -26,7 +24,7 @@ export const PlayerProvider = ({children}) => {
             return;
 
         const dif = Date.now() - startTime;
-        setElapsedTime(dif)
+        setElapsedTime(dif);
 
         const sec = Math.round(dayjs.duration(dif).asSeconds());
 
@@ -74,7 +72,7 @@ export const PlayerProvider = ({children}) => {
     };
 
     const resetGame = () => {
-        setMoves(0)
+        setMoves(0);
         setIsActive(false);
     };
 
